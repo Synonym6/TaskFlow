@@ -16,7 +16,7 @@
             <span class="nav-ico nav-ico--bell"></span>
             {% if unread_notifications_count %}<strong>{{ unread_notifications_count }}</strong>{% endif %}
         </a>
-        <button type="button" class="theme-switch" data-theme-toggle data-theme-endpoint="{% url 'accounts:theme_toggle' %}">
+        <button type="button" class="theme-switch" data-theme-toggle data-theme-endpoint="{% url 'accounts:theme_toggle' %}" aria-label="{% trans 'Переключить тему' %}" aria-pressed="{% if active_theme == 'dark' %}true{% else %}false{% endif %}">
             <span class="theme-switch__dot"></span>
         </button>
         <div class="dashboard-user">

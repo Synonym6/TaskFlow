@@ -56,7 +56,7 @@
                             {% endfor %}
                         </select>
                     </form>
-                    <button type="button" class="theme-switch" data-theme-toggle data-theme-endpoint="{% url 'accounts:theme_toggle' %}">
+                    <button type="button" class="theme-switch" data-theme-toggle data-theme-endpoint="{% url 'accounts:theme_toggle' %}" aria-label="{% trans 'Переключить тему' %}" aria-pressed="{% if active_theme == 'dark' %}true{% else %}false{% endif %}">
                         <span class="theme-switch__dot"></span>
                     </button>
                     <a href="{% url 'notifications:list' %}" class="notification-pill"><span>{{ unread_notifications_count }}</span></a>

@@ -4,30 +4,46 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggle = document.querySelector("[data-theme-toggle]");
     const endpoint = toggle?.dataset.themeEndpoint;
     const savedTheme = localStorage.getItem("taskflow-theme");
+    const csrfToken = document.cookie.split("csrftoken=")[1]?.split(";")[0] || "";
+
+    function applyTheme(theme) {
+        root.setAttribute("data-theme", theme);
+        localStorage.setItem("taskflow-theme", theme);
+        if (toggle) {
+            toggle.setAttribute("aria-pressed", String(theme === "dark"));
+            toggle.setAttribute("title", theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
+        }
+        window.dispatchEvent(new CustomEvent("taskflow:themechange", { detail: { theme } }));
+    }
 
     if (lockedTheme) {
-        root.setAttribute("data-theme", lockedTheme);
+        applyTheme(lockedTheme);
         return;
     }
 
     if (savedTheme) {
-        root.setAttribute("data-theme", savedTheme);
+        applyTheme(savedTheme);
+    } else {
+        applyTheme(root.getAttribute("data-theme") || "light");
     }
 
     if (toggle) {
         toggle.addEventListener("click", async () => {
             const nextTheme = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-            root.setAttribute("data-theme", nextTheme);
-            localStorage.setItem("taskflow-theme", nextTheme);
+            applyTheme(nextTheme);
             if (endpoint) {
-                await fetch(endpoint, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                        "X-CSRFToken": document.cookie.split("csrftoken=")[1]?.split(";")[0] || "",
-                    },
-                    body: new URLSearchParams({ theme: nextTheme }),
-                });
+                try {
+                    await fetch(endpoint, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "X-CSRFToken": csrfToken,
+                        },
+                        body: new URLSearchParams({ theme: nextTheme }),
+                    });
+                } catch (error) {
+                    console.error("Theme sync failed", error);
+                }
             }
         });
     }

@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (dayNumber > 0 && dayNumber <= lastDay.getDate()) {
                 const dateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(dayNumber).padStart(2, "0")}`;
                 item.innerHTML = `<strong>${dayNumber}</strong>`;
-                item.innerHTML += `<div><a class="small text-muted" href="/tasks/create/?date=${dateKey}">${addTaskText}</a></div>`;
+                item.innerHTML += `<div><a class="small text-muted calendar-add-link" href="/tasks/create/?date=${dateKey}">${addTaskText}</a></div>`;
                 (grouped[dateKey] || []).forEach((event) => {
                     const link = document.createElement("a");
                     link.href = event.url;
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dateKeys.forEach((dateKey) => {
             const card = document.createElement("div");
             card.className = "calendar-day";
-            card.innerHTML = `<strong>${dateKey}</strong><div><a class="small text-muted" href="/tasks/create/?date=${dateKey}">${addTaskText}</a></div>`;
+            card.innerHTML = `<strong>${dateKey}</strong><div><a class="small text-muted calendar-add-link" href="/tasks/create/?date=${dateKey}">${addTaskText}</a></div>`;
             (grouped[dateKey] || []).forEach((event) => {
                 const link = document.createElement("a");
                 link.href = event.url;
@@ -98,6 +98,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function mount(view) {
         calendarRoot.innerHTML = "";
+        viewButtons.forEach((button) => {
+            const isActive = button.dataset.view === view;
+            button.classList.toggle("active", isActive);
+            button.setAttribute("aria-pressed", String(isActive));
+        });
         if (view === "week") {
             calendarRoot.appendChild(renderWeek());
         } else if (view === "day") {
