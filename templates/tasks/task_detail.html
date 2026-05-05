@@ -1,128 +1,341 @@
 {% extends 'base.html' %}
-{% load i18n widget_tweaks %}
+{% load i18n static widget_tweaks %}
 {% block title %}{{ task.title }} | TaskFlow{% endblock %}
-{% block topbar_title %}<h1>{{ task.title }}</h1>{% endblock %}
-{% block content %}
-<section class="page-intro">
-    <div>
-        <h2>{{ task.title }}</h2>
-        <p>{% trans "Просматривайте описание, чеклист, комментарии и историю активности в одном экране." %}</p>
+{% block topbar_title %}<h1>{% trans "Детали задачи" %}</h1>{% endblock %}
+{% block topbar %}
+<header class="topbar dashboard-topbar">
+    <button class="sidebar-toggle topbar-burger" type="button" data-sidebar-toggle aria-label="{% trans 'Открыть меню' %}">
+        <span></span><span></span><span></span>
+    </button>
+    <div class="dashboard-search">
+        <span class="dashboard-search__icon"></span>
+        <input type="text" placeholder="{% trans 'Поиск задач, проектов...' %}" aria-label="{% trans 'Поиск задач, проектов...' %}">
     </div>
-    <div class="page-intro__actions">
-        <a href="{% url 'tasks:edit' task.pk %}" class="btn btn-primary">{% trans "Редактировать" %}</a>
-        <a href="{% url 'tasks:list' %}" class="btn btn-soft">{% trans "К списку" %}</a>
+    <div class="dashboard-topbar__actions">
+        <a href="{% url 'notifications:list' %}" class="dashboard-notify">
+            <span class="nav-ico nav-ico--bell"></span>
+            {% if unread_notifications_count %}<strong>{{ unread_notifications_count }}</strong>{% endif %}
+        </a>
+        <button type="button" class="theme-switch" data-theme-toggle data-theme-endpoint="{% url 'accounts:theme_toggle' %}" aria-label="{% trans 'Переключить тему' %}" aria-pressed="{% if active_theme == 'dark' %}true{% else %}false{% endif %}">
+            <span class="theme-switch__dot"></span>
+        </button>
+        <div class="dashboard-user">
+            <div class="avatar-circle dashboard-avatar">
+                {% if request.user.profile.avatar %}
+                    <img src="{{ request.user.profile.avatar.url }}" alt="avatar">
+                {% else %}
+                    {{ request.user.first_name|default:request.user.email|slice:":1"|upper }}
+                {% endif %}
+            </div>
+            <div class="dashboard-user__meta">
+                <strong>{{ request.user.first_name|default:request.user.email }}</strong>
+                <span>{% trans "Владелец" %}</span>
+            </div>
+            <span class="dashboard-user__caret"></span>
+        </div>
+    </div>
+</header>
+{% endblock %}
+{% block content %}
+<section class="task-detail-page">
+    <div class="task-detail-layout">
+        <div class="task-detail-main">
+            <a href="{% url 'tasks:list' %}" class="task-detail-back">
+                <span aria-hidden="true">←</span>{% trans "Назад к задачам" %}
+            </a>
+
+            <header class="task-hero card-surface">
+                <div class="task-hero__head">
+                    <div class="task-hero__title-wrap">
+                        <div class="task-hero__title-row">
+                            <h2>{{ task.title }}</h2>
+                            <button type="button" class="task-favorite-btn" aria-label="{% trans 'Добавить в избранное' %}">
+                                <span>☆</span>
+                            </button>
+                        </div>
+                        <div class="task-hero__meta">
+                            <span>{% trans "Проект" %}: <strong>{% if task.project %}{{ task.project.title }}{% else %}{% trans "Без проекта" %}{% endif %}</strong></span>
+                            <span>{% trans "Создана" %}: <strong>{{ task.created_at|date:"d.m.Y H:i" }}</strong></span>
+                            <span>{% trans "Обновлена" %}: <strong>{{ task.updated_at|date:"d.m.Y H:i" }}</strong></span>
+                            <span>{% trans "ID задачи" %}: <strong>#{{ task_code }}</strong></span>
+                        </div>
+                    </div>
+                    <div class="task-hero__actions">
+                        <a href="{% url 'tasks:edit' task.pk %}" class="btn btn-soft task-detail-btn">{% trans "Редактировать" %}</a>
+                        <div class="dropdown">
+                            <button class="btn btn-primary task-detail-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {% trans "Ещё" %}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end task-detail-menu">
+                                <li><a class="dropdown-item" href="{% url 'tasks:edit' task.pk %}">{% trans "Открыть редактирование" %}</a></li>
+                                <li>
+                                    <form method="post" class="task-inline-form">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="delete_task">
+                                        <button type="submit" class="dropdown-item text-danger">{% trans "Удалить задачу" %}</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <article class="card-surface task-section">
+                <div class="task-section__head">
+                    <h3>{% trans "Описание" %}</h3>
+                </div>
+                <div class="task-description">
+                    {% if task.description %}
+                        {{ task.description|linebreaks }}
+                    {% else %}
+                        <p class="task-empty-copy">{% trans "Описание пока не добавлено." %}</p>
+                    {% endif %}
+                </div>
+            </article>
+
+            <article class="card-surface task-section">
+                <div class="task-section__head">
+                    <h3>{% trans "Чек-лист" %}</h3>
+                </div>
+                {% if checklist_items %}
+                    <div class="task-checklist">
+                        {% for item in checklist_items %}
+                            <label class="task-check-row {% if item.is_done %}is-done{% endif %}" data-check-row>
+                                <input type="checkbox" class="task-check-row__input checklist-toggle" data-url="{% url 'tasks:checklist_toggle' item.pk %}" {% if item.is_done %}checked{% endif %}>
+                                <span class="task-check-row__box" aria-hidden="true"></span>
+                                <span class="task-check-row__text">{{ item.text }}</span>
+                                <form method="post" action="{% url 'tasks:checklist_delete' item.pk %}" class="task-inline-form task-check-row__action">
+                                    {% csrf_token %}
+                                    <button class="task-icon-btn" type="submit" aria-label="{% trans 'Удалить пункт чек-листа' %}">×</button>
+                                </form>
+                            </label>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="task-empty-copy">{% trans "Чек-лист пока пуст." %}</p>
+                {% endif %}
+                <form method="post" class="task-inline-create">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_checklist">
+                    <div class="task-inline-create__field">
+                        {{ checklist_form.text|add_class:"form-control app-input" }}
+                    </div>
+                    <button class="btn btn-soft" type="submit">{% trans "Добавить пункт" %}</button>
+                </form>
+            </article>
+
+            <article class="card-surface task-section">
+                <div class="task-section__head task-section__head--subtasks">
+                    <div>
+                        <h3>{% trans "Подзадачи" %}</h3>
+                        <p class="task-subtasks__summary">{% blocktrans with done=completed_subtasks total=subtasks|length %}{{ done }} из {{ total }} выполнено{% endblocktrans %}</p>
+                    </div>
+                    <div class="task-progress task-progress--subtasks" aria-hidden="true">
+                        <span style="width: {{ subtask_progress }}%"></span>
+                    </div>
+                </div>
+                {% if subtasks %}
+                    <div class="task-subtasks">
+                        {% for subtask in subtasks %}
+                            <div class="task-subtask-row {% if subtask.status == 'done' %}is-done{% endif %}">
+                                <label class="task-subtask-row__main">
+                                    <input type="checkbox" class="subtask-toggle" data-url="{% url 'tasks:subtask_toggle' subtask.pk %}" {% if subtask.status == 'done' %}checked{% endif %}>
+                                    <span class="task-check-row__box" aria-hidden="true"></span>
+                                    <span class="task-subtask-row__title">{{ subtask.title }}</span>
+                                </label>
+                                <span class="task-subtask-row__assignee">{{ subtask.owner.first_name|default:subtask.owner.email }}</span>
+                                <span class="task-status-badge task-status-badge--{{ subtask.status }}" data-subtask-status>{{ subtask.get_status_display }}</span>
+                                <span class="task-subtask-row__deadline">{{ subtask.deadline|date:"d.m"|default:"—" }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="task-empty-copy">{% trans "Подзадачи пока пусты." %}</p>
+                {% endif %}
+                <form method="post" class="task-inline-create task-inline-create--subtask">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_subtask">
+                    <div class="task-inline-create__grid">
+                        <div class="task-inline-create__field">
+                            {{ subtask_form.title|add_class:"form-control app-input" }}
+                        </div>
+                        <div class="task-inline-create__field">
+                            {{ subtask_form.deadline|add_class:"form-control app-input" }}
+                        </div>
+                    </div>
+                    <button class="btn btn-soft" type="submit">+ {% trans "Добавить подзадачу" %}</button>
+                </form>
+            </article>
+
+            <article class="card-surface task-section">
+                <div class="task-section__head">
+                    <h3>{% trans "Комментарии" %}</h3>
+                </div>
+                <form method="post" class="task-comment-compose">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_comment">
+                    <div class="task-comment-compose__avatar">
+                        {{ request.user.first_name|default:request.user.email|slice:":1"|upper }}
+                    </div>
+                    <div class="task-comment-compose__field">
+                        {{ comment_form.text|add_class:"form-control app-textarea" }}
+                    </div>
+                    <button class="btn btn-primary" type="submit">{% trans "Отправить" %}</button>
+                </form>
+                {% if comments %}
+                    <div class="task-comments">
+                        {% for comment in comments %}
+                            <article class="task-comment-card">
+                                <div class="task-comment-card__avatar">
+                                    {{ comment.author.first_name|default:comment.author.email|slice:":1"|upper }}
+                                </div>
+                                <div class="task-comment-card__body">
+                                    <div class="task-comment-card__top">
+                                        <div>
+                                            <strong>{{ comment.author.first_name|default:comment.author.email }}</strong>
+                                            <span>{{ comment.created_at|timesince }} {% trans "назад" %}</span>
+                                        </div>
+                                        {% if comment.author_id == request.user.id %}
+                                            <div class="dropdown">
+                                                <button class="task-icon-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">⋯</button>
+                                                <ul class="dropdown-menu dropdown-menu-end task-detail-menu">
+                                                    <li>
+                                                        <form method="post" action="{% url 'tasks:comment_delete' comment.pk %}" class="task-inline-form">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="dropdown-item text-danger">{% trans "Удалить" %}</button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <p>{{ comment.text|linebreaksbr }}</p>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="task-empty-copy">{% trans "Комментариев пока нет." %}</p>
+                {% endif %}
+            </article>
+        </div>
+
+        <aside class="task-detail-side">
+            <article class="card-surface task-side-card">
+                <div class="task-side-card__head">
+                    <h3>{% trans "Статус и приоритет" %}</h3>
+                </div>
+                <div class="task-side-form">
+                    <label class="task-side-form__row">
+                        <span>{% trans "Статус" %}</span>
+                        <select class="form-select app-select" data-task-status-select data-url="{% url 'tasks:update_status' task.pk %}">
+                            {% for option in status_ui_options %}
+                                <option value="{{ option.value }}" {% if task.is_overdue and option.value == 'overdue' %}selected{% elif task.status == option.value %}selected{% endif %} {% if option.readonly %}disabled{% endif %}>{{ option.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label class="task-side-form__row">
+                        <span>{% trans "Приоритет" %}</span>
+                        <select class="form-select app-select" data-task-priority-select data-url="{% url 'tasks:update_priority' task.pk %}">
+                            {% for value, label in meta_form.fields.priority.choices %}
+                                <option value="{{ value }}" {% if task.priority == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </div>
+            </article>
+
+            <article class="card-surface task-side-card">
+                <div class="task-side-card__head">
+                    <h3>{% trans "Исполнитель" %}</h3>
+                </div>
+                <div class="task-assignee">
+                    <div class="task-assignee__avatar">
+                        {{ task.owner.first_name|default:task.owner.email|slice:":1"|upper }}
+                    </div>
+                    <div>
+                        <strong>{{ task.owner.first_name|default:task.owner.email }}</strong>
+                        <span>{% trans "Владелец" %}</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card-surface task-side-card">
+                <div class="task-side-card__head">
+                    <h3>{% trans "Сроки" %}</h3>
+                </div>
+                <div class="task-deadline-card">
+                    <div class="task-deadline-card__row">
+                        <span>{% trans "Срок выполнения" %}</span>
+                        <strong>{{ task.deadline|date:"d.m.Y H:i"|default:_("Срок не указан") }}</strong>
+                    </div>
+                    <div class="task-deadline-card__row">
+                        <span>{% trans "Осталось" %}</span>
+                        <strong class="task-deadline-card__value task-deadline-card__value--{{ deadline_summary.tone }}">{{ deadline_summary.label }}</strong>
+                    </div>
+                    <div class="task-progress">
+                        <span style="width: {{ deadline_summary.progress }}%"></span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card-surface task-side-card">
+                <div class="task-side-card__head">
+                    <h3>{% trans "Теги" %}</h3>
+                </div>
+                <div class="task-tags">
+                    {% for tag in task.tags.all %}
+                        <form method="post" action="{% url 'tasks:remove_tag' task.pk tag.pk %}" class="task-tag-pill" style="--tag-color: {{ tag.color }}">
+                            {% csrf_token %}
+                            <span>{{ tag.name }}</span>
+                            <button type="submit" aria-label="{% trans 'Удалить тег' %}">×</button>
+                        </form>
+                    {% empty %}
+                        <p class="task-empty-copy task-empty-copy--small">{% trans "Теги пока не добавлены." %}</p>
+                    {% endfor %}
+                </div>
+                {% if tag_add_form.fields.tag.queryset %}
+                    <form method="post" class="task-tag-add">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="add_tag">
+                        <div class="task-tag-add__field">{{ tag_add_form.tag|add_class:"form-select app-select" }}</div>
+                        <button class="btn btn-soft" type="submit">+ {% trans "Добавить тег" %}</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'tasks:tags' %}" class="task-side-link">+ {% trans "Добавить тег" %}</a>
+                {% endif %}
+            </article>
+
+            <article class="card-surface task-side-card" id="task-activity-card">
+                <div class="task-side-card__head">
+                    <h3>{% trans "Активность" %}</h3>
+                </div>
+                {% if activity_logs %}
+                    <div class="task-activity-list">
+                        {% for log in activity_logs %}
+                            <div class="task-activity-item {% if forloop.counter > 5 %}is-extra{% endif %}" {% if forloop.counter > 5 %}hidden{% endif %}>
+                                <span class="task-activity-item__dot"></span>
+                                <div>
+                                    <strong>{{ log.action }}</strong>
+                                    <p>{{ log.description }}</p>
+                                </div>
+                                <time>{{ log.created_at|date:"d.m H:i" }}</time>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if activity_logs|length > 5 %}
+                        <button type="button" class="task-side-link task-side-link--button" data-show-activity>{% trans "Показать всю активность" %}</button>
+                    {% endif %}
+                {% else %}
+                    <p class="task-empty-copy task-empty-copy--small">{% trans "История активности пока пуста." %}</p>
+                {% endif %}
+            </article>
+        </aside>
     </div>
 </section>
+{% endblock %}
 
-<div class="detail-grid">
-    <section class="card-surface">
-        <div class="section-head">
-            <div>
-                <div class="d-flex gap-2 flex-wrap mb-3">
-                    <span class="status-chip status-{{ task.status }}">{{ task.get_status_display }}</span>
-                    <span class="priority-chip priority-{{ task.priority }}">{{ task.get_priority_display }}</span>
-                </div>
-                <h2>{% trans "Основная информация" %}</h2>
-                <p class="section-head__meta">{% if task.description %}{{ task.description }}{% else %}{% trans "Описание пока не добавлено." %}{% endif %}</p>
-            </div>
-            <form method="post" class="danger-zone__action" data-submit-state>
-                {% csrf_token %}
-                <input type="hidden" name="action" value="delete_task">
-                <button class="btn btn-danger" type="submit" data-submit-button>{% trans "Удалить задачу" %}</button>
-            </form>
-        </div>
-
-        <div class="info-grid mt-4">
-            <div><small>{% trans "Дедлайн" %}</small><strong>{{ task.deadline|date:"d.m.Y H:i"|default:"-" }}</strong></div>
-            <div><small>{% trans "Проект" %}</small><strong>{% if task.project %}{{ task.project.title }}{% else %}{% trans "Без проекта" %}{% endif %}</strong></div>
-            <div><small>{% trans "Теги" %}</small><strong>{% for tag in task.tags.all %}<span class="tag-dot" style="background:{{ tag.color }}">{{ tag.name }}</span>{% empty %}-{% endfor %}</strong></div>
-        </div>
-    </section>
-
-    <section class="card-surface">
-        <div class="section-head section-head--stack">
-            <div>
-                <h2>{% trans "Чеклист" %}</h2>
-                <p class="section-head__meta">{% trans "Отмечайте маленькие шаги по задаче и держите прогресс под рукой." %}</p>
-            </div>
-        </div>
-        <div class="checklist-list">
-            {% for item in task.checklist_items.all %}
-                <div class="check-item">
-                    <input type="checkbox" id="checklist-{{ item.pk }}" class="checklist-toggle" data-url="{% url 'tasks:checklist_toggle' item.pk %}" {% if item.is_done %}checked{% endif %}>
-                    <label for="checklist-{{ item.pk }}">{{ item.text }}</label>
-                    <form method="post" action="{% url 'tasks:checklist_delete' item.pk %}" class="ms-auto" data-submit-state>
-                        {% csrf_token %}
-                        <button class="btn btn-sm btn-outline-danger" type="submit" aria-label="{% trans 'Удалить пункт чеклиста' %}" data-submit-button>×</button>
-                    </form>
-                </div>
-            {% empty %}
-                <div class="empty-state empty-state--inline">
-                    <h3>{% trans "Чеклист пока пуст" %}</h3>
-                    <p>{% trans "Добавьте первый пункт, чтобы разбить задачу на шаги." %}</p>
-                </div>
-            {% endfor %}
-        </div>
-        <form method="post" class="app-form mt-3" data-submit-state>
-            {% csrf_token %}
-            <input type="hidden" name="action" value="add_checklist">
-            {% if checklist_form.non_field_errors %}<div class="alert alert-danger">{{ checklist_form.non_field_errors }}</div>{% endif %}
-            {% include "partials/form_field.html" with field=checklist_form.text %}
-            <button class="btn btn-soft mt-2" type="submit" data-submit-button>{% trans "Добавить пункт" %}</button>
-        </form>
-    </section>
-
-    <section class="card-surface">
-        <div class="section-head section-head--stack">
-            <div>
-                <h2>{% trans "Комментарии" %}</h2>
-                <p class="section-head__meta">{% trans "Комментарий сохраняется в базе и остаётся в истории задачи." %}</p>
-            </div>
-        </div>
-        <div class="comment-list">
-            {% for comment in task.comments.all %}
-                <article class="comment-card">
-                    <strong>{{ comment.author.first_name|default:comment.author.email }}</strong>
-                    <p>{{ comment.text }}</p>
-                    <small class="text-muted">{{ comment.created_at|date:"d.m.Y H:i" }}</small>
-                </article>
-            {% empty %}
-                <div class="empty-state empty-state--inline">
-                    <h3>{% trans "Комментариев пока нет" %}</h3>
-                    <p>{% trans "Добавьте первый комментарий, если хотите зафиксировать решение или заметку." %}</p>
-                </div>
-            {% endfor %}
-        </div>
-        <form method="post" class="app-form mt-3" data-submit-state>
-            {% csrf_token %}
-            <input type="hidden" name="action" value="add_comment">
-            {% if comment_form.non_field_errors %}<div class="alert alert-danger">{{ comment_form.non_field_errors }}</div>{% endif %}
-            {% include "partials/form_field.html" with field=comment_form.text %}
-            <button class="btn btn-soft mt-2" type="submit" data-submit-button>{% trans "Добавить комментарий" %}</button>
-        </form>
-    </section>
-
-    <section class="card-surface">
-        <div class="section-head section-head--stack">
-            <div>
-                <h2>{% trans "История активности" %}</h2>
-                <p class="section-head__meta">{% trans "Журнал показывает реальные изменения по задаче без фейковых событий." %}</p>
-            </div>
-        </div>
-        <div class="activity-list">
-            {% for log in task.activity_logs.all %}
-                <div class="activity-item">
-                    <strong>{{ log.action }}</strong>
-                    <p>{{ log.description }}</p>
-                    <small class="text-muted">{{ log.created_at|date:"d.m.Y H:i" }}</small>
-                </div>
-            {% empty %}
-                <div class="empty-state empty-state--inline">
-                    <h3>{% trans "История пока пуста" %}</h3>
-                    <p>{% trans "Активность появится после первых изменений задачи." %}</p>
-                </div>
-            {% endfor %}
-        </div>
-    </section>
-</div>
+{% block extra_js %}
+<script src="{% static 'js/task-detail.js' %}"></script>
 {% endblock %}

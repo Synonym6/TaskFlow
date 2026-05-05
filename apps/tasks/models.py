@@ -151,6 +151,45 @@ class Comment(models.Model):
         return f"{self.author} -> {self.task}"
 
 
+class SubTask(models.Model):
+    class StatusChoices(models.TextChoices):
+        TODO = "todo", _("Не начато")
+        IN_PROGRESS = "in_progress", _("В работе")
+        DONE = "done", _("Выполнено")
+
+    task = models.ForeignKey(
+        Task,
+        on_delete=models.CASCADE,
+        related_name="subtasks",
+        verbose_name=_("Задача"),
+    )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="subtasks",
+        verbose_name=_("Владелец"),
+    )
+    title = models.CharField(max_length=180, verbose_name=_("Название"))
+    status = models.CharField(
+        max_length=20,
+        choices=StatusChoices.choices,
+        default=StatusChoices.TODO,
+        verbose_name=_("Статус"),
+    )
+    deadline = models.DateTimeField(blank=True, null=True, verbose_name=_("Дедлайн"))
+    position = models.PositiveIntegerField(default=0, verbose_name=_("Позиция"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Создана"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Обновлена"))
+
+    class Meta:
+        verbose_name = _("Подзадача")
+        verbose_name_plural = _("Подзадачи")
+        ordering = ("position", "created_at")
+
+    def __str__(self):
+        return self.title
+
+
 class ActivityLog(models.Model):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,

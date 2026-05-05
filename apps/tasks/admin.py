@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from .models import ActivityLog, ChecklistItem, Comment, Tag, Task
+from .models import ActivityLog, ChecklistItem, Comment, SubTask, Tag, Task
 
 
 @admin.action(description=_("Отметить выбранные задачи выполненными"))
@@ -50,6 +50,14 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ("created_at", "updated_at")
     search_fields = ("task__title", "author__username", "text")
     ordering = ("-created_at",)
+
+
+@admin.register(SubTask)
+class SubTaskAdmin(admin.ModelAdmin):
+    list_display = ("title", "task", "owner", "status", "deadline", "position")
+    list_filter = ("status", "deadline")
+    search_fields = ("title", "task__title", "owner__username", "owner__email")
+    ordering = ("task", "position", "deadline")
 
 
 @admin.register(ActivityLog)

@@ -3,7 +3,7 @@ from datetime import datetime, time
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Case, IntegerField, Value, When
+from django.db.models import Case, IntegerField, Prefetch, Value, When
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -13,13 +13,73 @@ from django.views.decorators.http import require_POST
 
 from apps.notifications.services import create_task_completed_notification
 
-from .forms import ChecklistItemForm, CommentForm, TagForm, TaskForm
-from .models import ChecklistItem, Tag, Task
+from .forms import ChecklistItemForm, CommentForm, SubTaskForm, TagForm, TaskForm, TaskMetaForm, TaskTagAddForm
+from .models import ChecklistItem, Comment, SubTask, Tag, Task
 from .services import log_activity
 
 
 def _task_queryset(user):
-    return Task.objects.filter(owner=user).select_related("project").prefetch_related("tags", "checklist_items", "comments__author")
+    return Task.objects.filter(owner=user).select_related("project", "owner").prefetch_related(
+        "tags",
+        "checklist_items",
+        Prefetch("comments", queryset=Comment.objects.select_related("author")),
+        "activity_logs",
+        "subtasks",
+    )
+
+
+def _task_code(task):
+    return f"TASK-{task.created_at:%d%m%y}-{task.pk}"
+
+
+def _status_ui_options(task):
+    options = [
+        {"value": Task.StatusChoices.TODO, "label": _("Новая")},
+        {"value": Task.StatusChoices.IN_PROGRESS, "label": _("В работе")},
+        {"value": Task.StatusChoices.TESTING, "label": _("На паузе")},
+        {"value": Task.StatusChoices.DONE, "label": _("Выполнено")},
+    ]
+    if task.is_overdue:
+        options.append({"value": "overdue", "label": _("Просрочено"), "readonly": True})
+    return options
+
+
+def _deadline_summary(task):
+    if not task.deadline:
+        return {
+            "label": _("Срок не указан"),
+            "tone": "muted",
+            "progress": 0,
+        }
+
+    now = timezone.now()
+    remaining = task.deadline - now
+    if remaining.total_seconds() < 0:
+        overdue_days = max(abs(remaining.days), 1)
+        return {
+            "label": _("Просрочено на %(days)s дн.") % {"days": overdue_days},
+            "tone": "danger",
+            "progress": 100,
+        }
+    if task.deadline.date() == now.date():
+        label = _("Сегодня")
+    elif remaining.days == 0:
+        hours_left = max(int(remaining.total_seconds() // 3600), 1)
+        label = _("Осталось %(hours)s ч.") % {"hours": hours_left}
+    else:
+        label = _("Осталось %(days)s дн.") % {"days": remaining.days + 1}
+
+    if task.created_at and task.deadline > task.created_at:
+        total_seconds = (task.deadline - task.created_at).total_seconds()
+        spent_seconds = max((now - task.created_at).total_seconds(), 0)
+        progress = min(max(int((spent_seconds / total_seconds) * 100), 0), 100)
+    else:
+        progress = 0
+    return {
+        "label": label,
+        "tone": "warning" if remaining.days <= 1 else "muted",
+        "progress": progress,
+    }
 
 
 @login_required
@@ -98,6 +158,8 @@ def task_detail_view(request, pk):
     task = get_object_or_404(_task_queryset(request.user), pk=pk)
     checklist_form = ChecklistItemForm(request.POST or None, prefix="checklist")
     comment_form = CommentForm(request.POST or None, prefix="comment")
+    subtask_form = SubTaskForm(request.POST or None, prefix="subtask")
+    tag_add_form = TaskTagAddForm(request.POST or None, user=request.user, task=task, prefix="tagadd")
 
     if request.method == "POST":
         if request.POST.get("action") == "add_checklist" and checklist_form.is_valid():
@@ -114,19 +176,48 @@ def task_detail_view(request, pk):
             comment.save()
             log_activity(request.user, _("Добавлен комментарий"), comment.text, task=task, project=task.project)
             return redirect("tasks:detail", pk=task.pk)
+        if request.POST.get("action") == "add_subtask" and subtask_form.is_valid():
+            subtask = subtask_form.save(commit=False)
+            subtask.task = task
+            subtask.owner = request.user
+            subtask.position = task.subtasks.count()
+            subtask.save()
+            log_activity(request.user, _("Добавлена подзадача"), subtask.title, task=task, project=task.project)
+            return redirect("tasks:detail", pk=task.pk)
+        if request.POST.get("action") == "add_tag" and tag_add_form.is_valid():
+            tag = tag_add_form.cleaned_data["tag"]
+            task.tags.add(tag)
+            log_activity(request.user, _("Добавлен тег"), tag.name, task=task, project=task.project)
+            return redirect("tasks:detail", pk=task.pk)
         if request.POST.get("action") == "delete_task":
             title = task.title
             task.delete()
             messages.success(request, _("Задача %(title)s удалена.") % {"title": title})
             return redirect("tasks:list")
 
+    subtasks = list(task.subtasks.all())
+    completed_subtasks = sum(1 for item in subtasks if item.status == SubTask.StatusChoices.DONE)
+    subtask_progress = int((completed_subtasks / len(subtasks)) * 100) if subtasks else 0
+
     return render(
         request,
         "tasks/task_detail.html",
         {
             "task": task,
+            "task_code": _task_code(task),
             "checklist_form": checklist_form,
             "comment_form": comment_form,
+            "subtask_form": subtask_form,
+            "tag_add_form": tag_add_form,
+            "meta_form": TaskMetaForm(instance=task),
+            "status_ui_options": _status_ui_options(task),
+            "checklist_items": list(task.checklist_items.all()),
+            "subtasks": subtasks,
+            "completed_subtasks": completed_subtasks,
+            "subtask_progress": subtask_progress,
+            "comments": list(task.comments.all()),
+            "activity_logs": list(task.activity_logs.all()[:8]),
+            "deadline_summary": _deadline_summary(task),
         },
     )
 
@@ -187,6 +278,19 @@ def task_update_status_view(request, pk):
 
 @login_required
 @require_POST
+def task_update_priority_view(request, pk):
+    task = get_object_or_404(Task, pk=pk, owner=request.user)
+    priority = request.POST.get("priority")
+    if priority not in dict(Task.PriorityChoices.choices):
+        return JsonResponse({"ok": False, "error": _("Недопустимый приоритет.")}, status=400)
+    task.priority = priority
+    task.save()
+    log_activity(request.user, _("Обновлен приоритет"), task.get_priority_display(), task=task, project=task.project)
+    return JsonResponse({"ok": True, "priority": task.priority, "priority_label": task.get_priority_display()})
+
+
+@login_required
+@require_POST
 def checklist_add_view(request, pk):
     task = get_object_or_404(Task, pk=pk, owner=request.user)
     form = ChecklistItemForm(request.POST)
@@ -208,6 +312,46 @@ def checklist_toggle_view(request, pk):
     item.save(update_fields=["is_done"])
     log_activity(request.user, _("Обновлен чеклист"), item.text, task=item.task, project=item.task.project)
     return JsonResponse({"ok": True, "is_done": item.is_done})
+
+
+@login_required
+@require_POST
+def subtask_toggle_view(request, pk):
+    subtask = get_object_or_404(SubTask.objects.select_related("task"), pk=pk, task__owner=request.user)
+    subtask.status = (
+        SubTask.StatusChoices.DONE
+        if subtask.status != SubTask.StatusChoices.DONE
+        else SubTask.StatusChoices.TODO
+    )
+    subtask.save()
+    log_activity(request.user, _("Обновлена подзадача"), subtask.title, task=subtask.task, project=subtask.task.project)
+    return JsonResponse({"ok": True, "status": subtask.status, "status_label": subtask.get_status_display()})
+
+
+@login_required
+@require_POST
+def comment_delete_view(request, pk):
+    comment = get_object_or_404(Comment.objects.select_related("task"), pk=pk, task__owner=request.user, author=request.user)
+    task_pk = comment.task.pk
+    comment_text = comment.text
+    task = comment.task
+    comment.delete()
+    log_activity(request.user, _("Удален комментарий"), comment_text[:120], task=task, project=task.project)
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        return JsonResponse({"ok": True})
+    return redirect("tasks:detail", pk=task_pk)
+
+
+@login_required
+@require_POST
+def task_remove_tag_view(request, pk, tag_pk):
+    task = get_object_or_404(Task, pk=pk, owner=request.user)
+    tag = get_object_or_404(Tag, pk=tag_pk, owner=request.user)
+    task.tags.remove(tag)
+    log_activity(request.user, _("Удален тег"), tag.name, task=task, project=task.project)
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        return JsonResponse({"ok": True})
+    return redirect("tasks:detail", pk=pk)
 
 
 @login_required

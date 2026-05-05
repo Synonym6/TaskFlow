@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.projects.models import Project
 
-from .models import ChecklistItem, Comment, Tag, Task
+from .models import ChecklistItem, Comment, SubTask, Tag, Task
 
 
 class TaskForm(forms.ModelForm):
@@ -97,6 +97,9 @@ class ChecklistItemForm(forms.ModelForm):
         model = ChecklistItem
         fields = ("text",)
         labels = {"text": _("Новый пункт")}
+        widgets = {
+            "text": forms.TextInput(attrs={"placeholder": _("Добавьте новый пункт чек-листа")}),
+        }
 
 
 class CommentForm(forms.ModelForm):
@@ -105,5 +108,36 @@ class CommentForm(forms.ModelForm):
         fields = ("text",)
         labels = {"text": _("Комментарий")}
         widgets = {
-            "text": forms.Textarea(attrs={"rows": 3}),
+            "text": forms.Textarea(attrs={"rows": 3, "placeholder": _("Напишите комментарий...")}),
         }
+
+
+class SubTaskForm(forms.ModelForm):
+    class Meta:
+        model = SubTask
+        fields = ("title", "deadline")
+        labels = {
+            "title": _("Подзадача"),
+            "deadline": _("Срок"),
+        }
+        widgets = {
+            "title": forms.TextInput(attrs={"placeholder": _("Название подзадачи")}),
+            "deadline": forms.DateTimeInput(attrs={"type": "datetime-local"}),
+        }
+
+
+class TaskMetaForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ("status", "priority")
+
+
+class TaskTagAddForm(forms.Form):
+    tag = forms.ModelChoiceField(queryset=Tag.objects.none(), empty_label=None, label=_("Тег"))
+
+    def __init__(self, *args, user=None, task=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        queryset = Tag.objects.filter(owner=user) if user else Tag.objects.none()
+        if task is not None:
+            queryset = queryset.exclude(tasks=task)
+        self.fields["tag"].queryset = queryset.order_by("name")
