@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ project.title }} | TaskFlow{% endblock %}
+{% block topbar_title %}<h1>{{ project.title }}</h1>{% endblock %}
+{% block content %}
+<section class="page-intro">
+    <div>
+        <h2>{{ project.title }}</h2>
+        <p>{% if project.description %}{{ project.description }}{% else %}{% trans "Описание проекта пока не заполнено." %}{% endif %}</p>
+    </div>
+    <div class="page-intro__actions">
+        <a href="{% url 'tasks:create' %}?project={{ project.pk }}" class="btn btn-primary">{% trans "Новая задача" %}</a>
+        <a href="{% url 'projects:list' %}" class="btn btn-soft">{% trans "Все проекты" %}</a>
+    </div>
+</section>
+
+<section class="card-surface mb-4">
+    <div class="project-detail-hero">
+        <div>
+            <div class="project-progress large">
+                <span>{{ project.progress_percent }}%</span>
+                <div class="progress" aria-label="{% blocktrans with title=project.title percent=project.progress_percent %}Прогресс проекта {{ title }}: {{ percent }} процентов{% endblocktrans %}">
+                    <div class="progress-bar" style="width: {{ project.progress_percent }}%; background: {{ project.color }}"></div>
+                </div>
+            </div>
+        </div>
+        <div class="info-grid compact">
+            <div><small>{% trans "Дедлайн" %}</small><strong>{{ project.deadline|date:"d.m.Y H:i"|default:"-" }}</strong></div>
+            <div><small>{% trans "Всего задач" %}</small><strong>{{ project.total_tasks }}</strong></div>
+            <div><small>{% trans "Просрочено" %}</small><strong>{{ project.overdue_tasks }}</strong></div>
+        </div>
+    </div>
+</section>
+
+<div class="detail-grid">
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "Задачи проекта" %}</h2>
+                <p class="section-head__meta">{% trans "Все задачи этого проекта с актуальными сроками и статусами." %}</p>
+            </div>
+        </div>
+        {% for task in tasks %}
+            <a href="{% url 'tasks:detail' task.pk %}" class="task-row">
+                <div>
+                    <strong>{{ task.title }}</strong>
+                    <p class="mb-0 text-muted">{{ task.get_status_display }}</p>
+                </div>
+                <span class="{% if task.is_overdue %}text-danger{% endif %}">{{ task.deadline|date:"d.m H:i"|default:"-" }}</span>
+            </a>
+        {% empty %}
+            <div class="empty-state">
+                <h3>{% trans "В проекте пока нет задач" %}</h3>
+                <p>{% trans "Добавьте первую задачу, чтобы начать отслеживать прогресс проекта." %}</p>
+            </div>
+        {% endfor %}
+    </section>
+
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "Статистика" %}</h2>
+                <p class="section-head__meta">{% trans "Сводка только по текущему проекту, без данных из других разделов." %}</p>
+            </div>
+        </div>
+        <div class="info-grid">
+            {% for item in project_status_summary %}
+                <div>
+                    <small>{{ item.label }}</small>
+                    <strong>{{ item.value }}</strong>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "Настройки проекта" %}</h2>
+                <p class="section-head__meta">{% trans "Изменяйте только данные текущего проекта. Удаление остаётся отдельным опасным действием." %}</p>
+            </div>
+        </div>
+        <form method="post" class="app-form" novalidate data-submit-state>
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_project">
+            {% if edit_form.non_field_errors %}<div class="alert alert-danger">{{ edit_form.non_field_errors }}</div>{% endif %}
+            {% for field in edit_form %}
+                {% include "partials/form_field.html" with field=field %}
+            {% endfor %}
+            <button class="btn btn-primary" type="submit" data-submit-button>{% trans "Сохранить" %}</button>
+        </form>
+
+        <div class="danger-zone">
+            <div>
+                <h3>{% trans "Удаление проекта" %}</h3>
+                <p>{% trans "Это действие удалит проект и связанные данные без возможности восстановления." %}</p>
+            </div>
+            <form method="post" data-submit-state>
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete_project">
+                <button class="btn btn-danger" type="submit" data-submit-button>{% trans "Удалить проект" %}</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "Активность проекта" %}</h2>
+                <p class="section-head__meta">{% trans "Последние реальные действия, связанные с этим проектом." %}</p>
+            </div>
+        </div>
+        <div class="activity-list">
+            {% for log in recent_activity %}
+                <div class="activity-item">
+                    <strong>{{ log.action }}</strong>
+                    <p>{{ log.description }}</p>
+                    <small class="text-muted">{{ log.created_at|date:"d.m.Y H:i" }}</small>
+                </div>
+            {% empty %}
+                <div class="empty-state empty-state--inline">
+                    <h3>{% trans "Активности пока нет" %}</h3>
+                    <p>{% trans "Журнал проекта появится после первых изменений и задач." %}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'guest_base.html' %}
+{% load i18n widget_tweaks %}
+{% block title %}{% trans "Вход" %} | TaskFlow{% endblock %}
+{% block content %}
+<div class="auth-layout">
+    <header class="auth-header">
+        <a href="{% url 'landing' %}" class="auth-brand">
+            <span class="auth-brand__icon">
+                <i></i><i></i><i></i><i></i><i></i>
+            </span>
+            <span>TaskFlow</span>
+        </a>
+        <form action="/i18n/setlang/" method="post" class="auth-language-form">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            {% get_current_language as CURRENT_LANGUAGE %}
+            <select name="language" class="auth-language-select" onchange="this.form.submit()">
+                <option value="ru" {% if CURRENT_LANGUAGE == 'ru' %}selected{% endif %}>RU</option>
+                <option value="en" {% if CURRENT_LANGUAGE == 'en' %}selected{% endif %}>EN</option>
+            </select>
+        </form>
+    </header>
+
+    <main class="auth-main">
+        <section class="auth-panel">
+            <div class="auth-panel__head">
+                <h1>{% trans "Добро пожаловать!" %}</h1>
+                <p>{% trans "Войдите в свой аккаунт" %}</p>
+            </div>
+
+            <form method="post" novalidate class="auth-form">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="auth-alert auth-alert--danger">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                {% for field in form %}
+                    <div class="auth-field {% if field.field.widget.input_type == 'checkbox' %}auth-field--checkbox{% endif %}">
+                        {% if field.field.widget.input_type == 'checkbox' %}
+                            <div class="auth-form__row">
+                                <label class="auth-check" for="{{ field.id_for_label }}">
+                                    {{ field|add_class:"auth-check__input" }}
+                                    <span class="auth-check__box"></span>
+                                    <span class="auth-check__label">{{ field.label }}</span>
+                                </label>
+                                <a href="{% url 'accounts:password_reset_placeholder' %}" class="auth-inline-link">{% trans "Забыли пароль?" %}</a>
+                            </div>
+                        {% else %}
+                            <label class="auth-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {% if field.name == 'password' %}
+                                <div class="auth-password">
+                                    {{ field|add_class:"auth-input auth-input--password"|attr:"placeholder:" }}
+                                    <button type="button" class="auth-password__toggle" data-password-toggle aria-label="{% trans 'Показать пароль' %}">
+                                        <span class="auth-eye"></span>
+                                    </button>
+                                </div>
+                            {% else %}
+                                {{ field|add_class:"auth-input"|attr:"placeholder:" }}
+                            {% endif %}
+                        {% endif %}
+                        {% if field.errors %}<div class="auth-error">{{ field.errors|join:", " }}</div>{% endif %}
+                    </div>
+                {% endfor %}
+
+                <button class="auth-submit" type="submit">{% trans "Войти" %}</button>
+            </form>
+
+            <p class="auth-panel__footer">
+                {% trans "Нет аккаунта?" %}
+                <a href="{% url 'accounts:register' %}">{% trans "Зарегистрироваться" %}</a>
+            </p>
+        </section>
+    </main>
+
+    <footer class="auth-footer">© 2024 TaskFlow</footer>
+</div>
+{% endblock %}

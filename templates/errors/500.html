@@ -1,0 +1,12 @@
+{% extends 'guest_base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="error-shell">
+    <div class="card-surface error-card">
+        <div class="error-code">500</div>
+        <h1>{% trans "Что-то пошло не так" %}</h1>
+        <p>{% trans "Мы уже работаем над проблемой. Попробуйте открыть главную страницу позже." %}</p>
+        <a href="{% url 'landing' %}" class="btn btn-primary">{% trans "На главную" %}</a>
+    </div>
+</div>
+{% endblock %}

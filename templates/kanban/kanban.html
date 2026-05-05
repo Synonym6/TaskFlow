@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block title %}Kanban | TaskFlow{% endblock %}
+{% block topbar_title %}<h1>{% trans "Kanban-доска" %}</h1>{% endblock %}
+{% block content %}
+<section class="page-intro">
+    <div>
+        <h2>{% trans "Kanban-доска" %}</h2>
+        <p>{% trans "Перетаскивайте карточки между колонками. Изменения статуса сохраняются в базе сразу после переноса." %}</p>
+    </div>
+    <a href="{% url 'tasks:create' %}" class="btn btn-primary">{% trans "Новая задача" %}</a>
+</section>
+
+<div class="kanban-board" data-kanban-endpoint="{% url 'tasks:kanban_update' %}">
+    {% for status, items in grouped_tasks.items %}
+        <section class="card-surface kanban-column" data-status="{{ status }}">
+            <div class="section-head">
+                <div>
+                    <h2>
+                        {% if status == 'todo' %}{% trans "К выполнению" %}
+                        {% elif status == 'in_progress' %}{% trans "В работе" %}
+                        {% elif status == 'testing' %}{% trans "Тестирование" %}
+                        {% else %}{% trans "Готово" %}
+                        {% endif %}
+                    </h2>
+                    <p class="section-head__meta">{% trans "Перетащите карточку в соседнюю колонку, чтобы изменить статус." %}</p>
+                </div>
+                <span class="kanban-column__count">{{ items|length }}</span>
+            </div>
+            <div class="kanban-list" data-status="{{ status }}">
+                {% for task in items %}
+                    <article class="kanban-card" data-task-id="{{ task.pk }}">
+                        <strong>{{ task.title }}</strong>
+                        <p>{% if task.project %}{{ task.project.title }}{% else %}{% trans "Без проекта" %}{% endif %}</p>
+                        <small class="{% if task.is_overdue %}text-danger{% endif %}">{{ task.deadline|date:"d.m H:i"|default:"-" }}</small>
+                    </article>
+                {% empty %}
+                    <div class="empty-state empty-state--inline">
+                        <h3>{% trans "Пусто" %}</h3>
+                        <p>{% trans "В этой колонке пока нет задач." %}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endfor %}
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/kanban.js' %}"></script>
+{% endblock %}

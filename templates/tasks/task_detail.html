@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load i18n widget_tweaks %}
+{% block title %}{{ task.title }} | TaskFlow{% endblock %}
+{% block topbar_title %}<h1>{{ task.title }}</h1>{% endblock %}
+{% block content %}
+<section class="page-intro">
+    <div>
+        <h2>{{ task.title }}</h2>
+        <p>{% trans "Просматривайте описание, чеклист, комментарии и историю активности в одном экране." %}</p>
+    </div>
+    <div class="page-intro__actions">
+        <a href="{% url 'tasks:edit' task.pk %}" class="btn btn-primary">{% trans "Редактировать" %}</a>
+        <a href="{% url 'tasks:list' %}" class="btn btn-soft">{% trans "К списку" %}</a>
+    </div>
+</section>
+
+<div class="detail-grid">
+    <section class="card-surface">
+        <div class="section-head">
+            <div>
+                <div class="d-flex gap-2 flex-wrap mb-3">
+                    <span class="status-chip status-{{ task.status }}">{{ task.get_status_display }}</span>
+                    <span class="priority-chip priority-{{ task.priority }}">{{ task.get_priority_display }}</span>
+                </div>
+                <h2>{% trans "Основная информация" %}</h2>
+                <p class="section-head__meta">{% if task.description %}{{ task.description }}{% else %}{% trans "Описание пока не добавлено." %}{% endif %}</p>
+            </div>
+            <form method="post" class="danger-zone__action" data-submit-state>
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete_task">
+                <button class="btn btn-danger" type="submit" data-submit-button>{% trans "Удалить задачу" %}</button>
+            </form>
+        </div>
+
+        <div class="info-grid mt-4">
+            <div><small>{% trans "Дедлайн" %}</small><strong>{{ task.deadline|date:"d.m.Y H:i"|default:"-" }}</strong></div>
+            <div><small>{% trans "Проект" %}</small><strong>{% if task.project %}{{ task.project.title }}{% else %}{% trans "Без проекта" %}{% endif %}</strong></div>
+            <div><small>{% trans "Теги" %}</small><strong>{% for tag in task.tags.all %}<span class="tag-dot" style="background:{{ tag.color }}">{{ tag.name }}</span>{% empty %}-{% endfor %}</strong></div>
+        </div>
+    </section>
+
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "Чеклист" %}</h2>
+                <p class="section-head__meta">{% trans "Отмечайте маленькие шаги по задаче и держите прогресс под рукой." %}</p>
+            </div>
+        </div>
+        <div class="checklist-list">
+            {% for item in task.checklist_items.all %}
+                <div class="check-item">
+                    <input type="checkbox" id="checklist-{{ item.pk }}" class="checklist-toggle" data-url="{% url 'tasks:checklist_toggle' item.pk %}" {% if item.is_done %}checked{% endif %}>
+                    <label for="checklist-{{ item.pk }}">{{ item.text }}</label>
+                    <form method="post" action="{% url 'tasks:checklist_delete' item.pk %}" class="ms-auto" data-submit-state>
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-outline-danger" type="submit" aria-label="{% trans 'Удалить пункт чеклиста' %}" data-submit-button>×</button>
+                    </form>
+                </div>
+            {% empty %}
+                <div class="empty-state empty-state--inline">
+                    <h3>{% trans "Чеклист пока пуст" %}</h3>
+                    <p>{% trans "Добавьте первый пункт, чтобы разбить задачу на шаги." %}</p>
+                </div>
+            {% endfor %}
+        </div>
+        <form method="post" class="app-form mt-3" data-submit-state>
+            {% csrf_token %}
+            <input type="hidden" name="action" value="add_checklist">
+            {% if checklist_form.non_field_errors %}<div class="alert alert-danger">{{ checklist_form.non_field_errors }}</div>{% endif %}
+            {% include "partials/form_field.html" with field=checklist_form.text %}
+            <button class="btn btn-soft mt-2" type="submit" data-submit-button>{% trans "Добавить пункт" %}</button>
+        </form>
+    </section>
+
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "Комментарии" %}</h2>
+                <p class="section-head__meta">{% trans "Комментарий сохраняется в базе и остаётся в истории задачи." %}</p>
+            </div>
+        </div>
+        <div class="comment-list">
+            {% for comment in task.comments.all %}
+                <article class="comment-card">
+                    <strong>{{ comment.author.first_name|default:comment.author.email }}</strong>
+                    <p>{{ comment.text }}</p>
+                    <small class="text-muted">{{ comment.created_at|date:"d.m.Y H:i" }}</small>
+                </article>
+            {% empty %}
+                <div class="empty-state empty-state--inline">
+                    <h3>{% trans "Комментариев пока нет" %}</h3>
+                    <p>{% trans "Добавьте первый комментарий, если хотите зафиксировать решение или заметку." %}</p>
+                </div>
+            {% endfor %}
+        </div>
+        <form method="post" class="app-form mt-3" data-submit-state>
+            {% csrf_token %}
+            <input type="hidden" name="action" value="add_comment">
+            {% if comment_form.non_field_errors %}<div class="alert alert-danger">{{ comment_form.non_field_errors }}</div>{% endif %}
+            {% include "partials/form_field.html" with field=comment_form.text %}
+            <button class="btn btn-soft mt-2" type="submit" data-submit-button>{% trans "Добавить комментарий" %}</button>
+        </form>
+    </section>
+
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "История активности" %}</h2>
+                <p class="section-head__meta">{% trans "Журнал показывает реальные изменения по задаче без фейковых событий." %}</p>
+            </div>
+        </div>
+        <div class="activity-list">
+            {% for log in task.activity_logs.all %}
+                <div class="activity-item">
+                    <strong>{{ log.action }}</strong>
+                    <p>{{ log.description }}</p>
+                    <small class="text-muted">{{ log.created_at|date:"d.m.Y H:i" }}</small>
+                </div>
+            {% empty %}
+                <div class="empty-state empty-state--inline">
+                    <h3>{% trans "История пока пуста" %}</h3>
+                    <p>{% trans "Активность появится после первых изменений задачи." %}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

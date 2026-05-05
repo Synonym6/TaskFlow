@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block title %}{% trans "Дашборд" %} | TaskFlow{% endblock %}
+
+{% block topbar %}
+<header class="topbar dashboard-topbar">
+    <button class="sidebar-toggle topbar-burger" type="button" data-sidebar-toggle aria-label="{% trans 'Открыть меню' %}">
+        <span></span><span></span><span></span>
+    </button>
+    <div class="dashboard-search">
+        <span class="dashboard-search__icon"></span>
+        <input type="text" placeholder="{% trans 'Поиск задач, проектов...' %}" aria-label="{% trans 'Поиск задач, проектов...' %}">
+    </div>
+    <div class="dashboard-topbar__actions">
+        <a href="{% url 'notifications:list' %}" class="dashboard-notify">
+            <span class="nav-ico nav-ico--bell"></span>
+            {% if unread_notifications_count %}<strong>{{ unread_notifications_count }}</strong>{% endif %}
+        </a>
+        <button type="button" class="theme-switch" data-theme-toggle data-theme-endpoint="{% url 'accounts:theme_toggle' %}">
+            <span class="theme-switch__dot"></span>
+        </button>
+        <div class="dashboard-user">
+            <div class="avatar-circle dashboard-avatar">
+                {% if request.user.profile.avatar %}
+                    <img src="{{ request.user.profile.avatar.url }}" alt="avatar">
+                {% else %}
+                    {{ request.user.first_name|default:request.user.email|slice:":1"|upper }}
+                {% endif %}
+            </div>
+            <div class="dashboard-user__meta">
+                <strong>{{ request.user.first_name|default:request.user.email }}</strong>
+                <span>{% trans "Владелец" %}</span>
+            </div>
+            <span class="dashboard-user__caret"></span>
+        </div>
+    </div>
+</header>
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-shell">
+    <div class="dashboard-main">
+        <div class="dashboard-hero">
+            <h1>{{ greeting }}, {{ request.user.first_name|default:request.user.email }}! 👋</h1>
+            <p>{{ dashboard_subtitle }}</p>
+        </div>
+
+        <div class="dashboard-metrics">
+            {% for card in stat_cards %}
+                <article class="dashboard-card dashboard-card--metric">
+                    <div class="dashboard-metric__head">
+                        <div>
+                            <span class="dashboard-metric__label">{{ card.label }}</span>
+                            <strong class="{% if card.tone == 'danger' %}is-danger{% endif %}">{{ card.value }}</strong>
+                        </div>
+                        <span class="dashboard-metric__icon dashboard-metric__icon--{{ card.tone }}">
+                            <i class="metric-icon metric-icon--{{ card.icon }}"></i>
+                        </span>
+                    </div>
+                    <div class="dashboard-metric__foot">
+                        {% if card.delta %}
+                            <span class="dashboard-delta dashboard-delta--{{ card.delta.direction }}">{{ card.delta.label }}</span>
+                        {% else %}
+                            <span class="dashboard-delta dashboard-delta--muted">{% trans "Нет данных для сравнения" %}</span>
+                        {% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+
+        <div class="dashboard-body-grid">
+            <article class="dashboard-card dashboard-card--tasks">
+                <div class="dashboard-card__head">
+                    <h2>{% trans "Ближайшие задачи" %}</h2>
+                </div>
+                {% if nearest_tasks %}
+                    <div class="dashboard-nearest">
+                        {% for task in nearest_tasks %}
+                            <a href="{% url 'tasks:detail' task.pk %}" class="dashboard-nearest__item">
+                                <span class="dashboard-nearest__dot" style="background: {% if task.priority == 'high' %}var(--danger){% elif task.priority == 'medium' %}var(--warning){% else %}var(--info){% endif %};"></span>
+                                <span class="dashboard-nearest__title">{{ task.title }}</span>
+                                <time>{{ task.deadline|date:"d.m, H:i" }}</time>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'tasks:list' %}" class="dashboard-link-btn">{% trans "Все задачи" %}</a>
+                {% else %}
+                    <div class="dashboard-empty">{% trans "Ближайших задач пока нет." %}</div>
+                {% endif %}
+            </article>
+
+            <article class="dashboard-card dashboard-card--chart">
+                <div class="dashboard-card__head">
+                    <h2>{% trans "Прогресс задач" %}</h2>
+                    <button class="dashboard-chip" type="button">{% trans "Неделя" %}</button>
+                </div>
+                {% if dashboard_chart_empty %}
+                    <div class="dashboard-empty dashboard-empty--chart">{% trans "Недостаточно данных для графика." %}</div>
+                {% else %}
+                    <div class="dashboard-chart-wrap">
+                        <canvas id="dashboardProgressChart" data-chart='{{ chart_data|safe }}'></canvas>
+                        <div class="dashboard-chart-summary">
+                            <strong>{{ dashboard_progress_percent }}%</strong>
+                            <span>{% trans "выполнено" %}</span>
+                        </div>
+                    </div>
+                {% endif %}
+            </article>
+        </div>
+
+        <article class="dashboard-card dashboard-card--table">
+            <div class="dashboard-card__head">
+                <h2>{% trans "Недавние задачи" %}</h2>
+            </div>
+            {% if recent_tasks %}
+                <div class="dashboard-table-wrap">
+                    <table class="dashboard-table">
+                        <thead>
+                            <tr>
+                                <th>{% trans "Задача" %}</th>
+                                <th>{% trans "Проект" %}</th>
+                                <th>{% trans "Статус" %}</th>
+                                <th>{% trans "Приоритет" %}</th>
+                                <th>{% trans "Срок" %}</th>
+                                <th>{% trans "Действия" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in recent_tasks %}
+                                <tr>
+                                    <td><a href="{% url 'tasks:detail' task.pk %}">{{ task.title }}</a></td>
+                                    <td>{{ task.project.title|default:"—" }}</td>
+                                    <td>
+                                        <span class="dashboard-badge dashboard-badge--status {% if task.is_overdue %}dashboard-badge--overdue{% else %}dashboard-badge--{{ task.status }}{% endif %}">
+                                            {% if task.is_overdue %}{% trans "Просрочено" %}{% else %}{{ task.get_status_display }}{% endif %}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="dashboard-priority dashboard-priority--{{ task.priority }}">
+                                            <i></i>{{ task.get_priority_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ task.deadline|date:"d.m, H:i"|default:"—" }}</td>
+                                    <td><span class="dashboard-dots"></span></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{% url 'tasks:list' %}" class="dashboard-text-link">{% trans "Все задачи" %}</a>
+            {% else %}
+                <div class="dashboard-empty">{% trans "У вас пока нет задач. Создайте первую задачу." %}</div>
+            {% endif %}
+        </article>
+    </div>
+
+    <aside class="dashboard-side">
+        <article class="dashboard-card dashboard-card--calendar">
+            <div class="dashboard-card__head">
+                <h2>{% trans "Календарь" %}</h2>
+                <span class="dashboard-calendar__month">{{ calendar_data.month_label }}</span>
+            </div>
+            <div class="dashboard-calendar">
+                <div class="dashboard-calendar__weekdays">
+                    {% for weekday in calendar_data.weekdays %}<span>{{ weekday }}</span>{% endfor %}
+                </div>
+                <div class="dashboard-calendar__grid">
+                    {% for week in calendar_data.weeks %}
+                        {% for day in week %}
+                            <div class="dashboard-calendar__cell {% if not day.is_current_month %}is-out{% endif %} {% if day.is_today %}is-today{% endif %} {% if day.is_overdue %}is-overdue{% endif %}">
+                                {% if day.day %}
+                                    <span>{{ day.day }}</span>
+                                    {% if day.has_tasks %}<i></i>{% endif %}
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+        </article>
+
+        <article class="dashboard-card dashboard-card--projects">
+            <div class="dashboard-card__head">
+                <h2>{% trans "Активные проекты" %}</h2>
+                <a href="{% url 'projects:list' %}" class="dashboard-chip dashboard-chip--action">+ {% trans "Новый проект" %}</a>
+            </div>
+            {% if active_projects %}
+                <div class="dashboard-projects">
+                    {% for project in active_projects %}
+                        <div class="dashboard-project">
+                            <div class="dashboard-project__row">
+                                <strong>{{ project.title }}</strong>
+                                <span>{{ project.progress_percent }}%</span>
+                            </div>
+                            <div class="dashboard-progress">
+                                <span style="width: {{ project.progress_percent }}%; background: {{ project.color|default:'#6C4DFF' }}"></span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'projects:list' %}" class="dashboard-text-link">{% trans "Все проекты" %}</a>
+            {% else %}
+                <div class="dashboard-empty">{% trans "Проектов пока нет." %}</div>
+            {% endif %}
+        </article>
+
+        <article class="dashboard-card dashboard-card--activity">
+            <div class="dashboard-card__head">
+                <h2>{% trans "Активность" %}</h2>
+            </div>
+            {% if activity_items %}
+                <div class="dashboard-activity">
+                    {% for item in activity_items %}
+                        <div class="dashboard-activity__item">
+                            <span class="dashboard-activity__icon dashboard-activity__icon--{{ forloop.counter|divisibleby:2|yesno:'success,info' }}"></span>
+                            <div class="dashboard-activity__text">
+                                <strong>{% trans "Вы" %} {{ item.action|lower }}</strong>
+                                <p>{{ item.description }}</p>
+                            </div>
+                            <time>{{ item.created_at|timesince }}</time>
+                        </div>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'notifications:list' %}" class="dashboard-text-link">{% trans "Вся активность" %}</a>
+            {% else %}
+                <div class="dashboard-empty">{% trans "Активность появится после первых действий." %}</div>
+            {% endif %}
+        </article>
+    </aside>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/charts.js' %}"></script>
+{% endblock %}

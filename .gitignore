@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+.Python
+.env
+.venv/
+venv/
+env/
+ENV/
+
+# Django/media/static local outputs
+media/
+staticfiles/
+
+# Tooling / IDE
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db

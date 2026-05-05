@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block title %}{% trans "Статистика" %} | TaskFlow{% endblock %}
+{% block topbar_title %}<h1>{% trans "Статистика" %}</h1>{% endblock %}
+{% block content %}
+<section class="page-intro">
+    <div>
+        <h2>{% trans "Аналитика задач" %}</h2>
+        <p>{% trans "Все графики и показатели строятся по реальным задачам и проектам текущего пользователя." %}</p>
+    </div>
+</section>
+
+{% if has_data %}
+    <div class="stats-grid mb-4">
+        <div class="card-surface stat-card"><span>{% trans "Всего задач" %}</span><strong>{{ total_tasks }}</strong></div>
+        <div class="card-surface stat-card"><span>{% trans "Выполнено" %}</span><strong>{{ completed_tasks }}</strong></div>
+        <div class="card-surface stat-card"><span>{% trans "В работе" %}</span><strong>{{ in_progress_tasks }}</strong></div>
+        <div class="card-surface stat-card"><span>{% trans "Просрочено" %}</span><strong>{{ overdue_tasks }}</strong></div>
+    </div>
+    <div class="statistics-grid" data-stats='{{ stats_json|safe }}'>
+        <section class="card-surface chart-card">
+            <div class="section-head section-head--stack">
+                <div>
+                    <h2>{% trans "Выполнение по дням" %}</h2>
+                    <p class="section-head__meta">{% trans "Показывает изменение прогресса завершения задач по датам." %}</p>
+                </div>
+            </div>
+            <canvas id="completionChart"></canvas>
+        </section>
+        <section class="card-surface chart-card">
+            <div class="section-head section-head--stack">
+                <div>
+                    <h2>{% trans "По статусам" %}</h2>
+                    <p class="section-head__meta">{% trans "Распределение задач по текущим статусам." %}</p>
+                </div>
+            </div>
+            <canvas id="statusChart"></canvas>
+        </section>
+        <section class="card-surface chart-card">
+            <div class="section-head section-head--stack">
+                <div>
+                    <h2>{% trans "По приоритетам" %}</h2>
+                    <p class="section-head__meta">{% trans "Сколько задач имеют высокий, средний и низкий приоритет." %}</p>
+                </div>
+            </div>
+            <canvas id="priorityChart"></canvas>
+        </section>
+        <section class="card-surface chart-card">
+            <div class="section-head section-head--stack">
+                <div>
+                    <h2>{% trans "Прогресс проектов" %}</h2>
+                    <p class="section-head__meta">{% trans "Процент выполнения по каждому проекту пользователя." %}</p>
+                </div>
+            </div>
+            <canvas id="projectChart"></canvas>
+        </section>
+    </div>
+{% else %}
+    <div class="card-surface empty-state large">
+        <h3>{% trans "Пока нет данных для статистики" %}</h3>
+        <p>{% trans "Создайте первую задачу или проект, чтобы здесь появились графики и показатели." %}</p>
+        <a href="{% url 'tasks:create' %}" class="btn btn-primary">{% trans "Создать задачу" %}</a>
+    </div>
+{% endif %}
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/charts.js' %}"></script>
+{% endblock %}
