@@ -712,3 +712,137 @@ src/
   styles/
   assets/
   tests/
+```
+
+---
+
+## 27. GitHub workflow and automation
+
+Codex must treat GitHub work as part of normal delivery, not as a separate optional step.
+
+If the repository is already connected to GitHub and authentication is configured, Codex may:
+- create branches;
+- stage changes;
+- create commits;
+- push branches;
+- update the remote state after rollback work;
+- keep branch tracking configured.
+
+Codex must always tell the user in a short commentary update when it is:
+- creating or switching a branch;
+- committing changes;
+- pushing changes to GitHub;
+- reverting or rolling back a previously pushed change.
+
+Codex should not ask for permission before normal GitHub operations when the user request clearly implies delivery, unless the operation is destructive or ambiguous.
+
+---
+
+## 28. Branching rules
+
+For non-trivial work, Codex should prefer a task branch instead of committing directly to `main`.
+
+Recommended branch naming:
+- `feature/<short-topic>` for new user-facing features;
+- `fix/<short-topic>` for bug fixes;
+- `refactor/<short-topic>` for targeted cleanup tied to the task;
+- `content/<short-topic>` for documentation or copy changes;
+- `hotfix/<short-topic>` for urgent production fixes.
+
+Branch names must be:
+- short;
+- readable;
+- lowercase;
+- hyphenated where useful;
+- directly related to the task.
+
+Codex may commit directly to `main` only when:
+- the repository is in early setup mode;
+- the user explicitly asks for direct commits to `main`;
+- the task is tiny and clearly administrative;
+- the existing project workflow already uses direct commits to `main`.
+
+If Codex creates a branch, it must push that branch to GitHub and set upstream tracking.
+
+---
+
+## 29. Commit rules
+
+Commits must be real checkpoints, not random snapshots.
+
+Codex must:
+- stage only relevant files;
+- avoid mixing unrelated work in one commit;
+- use concise, descriptive commit messages;
+- commit after completing a meaningful unit of work;
+- push after the commit when the task is meant to be delivered or backed up remotely.
+
+Preferred commit message patterns:
+- `feat: add task filtering`
+- `fix: correct notification badge state`
+- `refactor: simplify project detail view`
+- `docs: update local setup guide`
+- `chore: adjust repository settings`
+
+If the user asks Codex to "save", "send", "commit", or "push", Codex should interpret that as permission to complete the full git flow needed for the task.
+
+---
+
+## 30. Push and remote sync rules
+
+After a successful commit, Codex should push changes to GitHub when:
+- the user asked to send or save the work remotely;
+- the task is complete enough to preserve remotely;
+- the current workflow expects active branch backup on GitHub.
+
+Codex must verify:
+- the current branch;
+- whether upstream is configured;
+- whether push succeeded.
+
+If push fails, Codex must:
+- report the exact blocker briefly;
+- attempt a safe fix if obvious;
+- avoid pretending the remote was updated when it was not.
+
+Codex must not force-push by default.
+
+Codex may force-push only when:
+- the user explicitly asks for it;
+- the branch is clearly private and under active controlled use;
+- the rewrite is required for a rollback, cleanup, or corrected history;
+- Codex explicitly tells the user that a force-push is being performed.
+
+---
+
+## 31. Rollback and revert rules
+
+If the user asks to roll back, revert, or return the project to an older working version, Codex must treat this as both a local and GitHub state change.
+
+Codex should choose the safest matching strategy:
+- use `git revert` when the goal is to undo a past commit while preserving history;
+- use a targeted reverse code change plus commit when only part of the change must be undone;
+- use reset and force-push only when the user clearly wants history rewritten and the risk is acceptable.
+
+When rollback work is requested, Codex must:
+- identify the target commit or state;
+- explain briefly which rollback method is being used;
+- create the rollback commit or history rewrite;
+- push the resulting state to GitHub so local and remote stay aligned.
+
+If a destructive rollback would rewrite shared history, Codex must pause and ask before doing that rewrite.
+
+---
+
+## 32. Default GitHub operating mode for this project
+
+Unless the user says otherwise, Codex should use this operating mode:
+- inspect git status before and after meaningful work;
+- create a task branch for substantial feature or fix work;
+- implement the requested change;
+- run relevant verification;
+- commit with a clear message;
+- push the branch or updated `main` to GitHub;
+- tell the user what branch and commit were sent.
+
+Codex should behave as an active repository operator for this project, meaning GitHub synchronization is part of completing the task, not an afterthought.
