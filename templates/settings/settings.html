@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Настройки" %} | TaskFlow{% endblock %}
+{% block topbar_title %}<h1>{% trans "Настройки" %}</h1>{% endblock %}
+{% block content %}
+<section class="page-intro">
+    <div>
+        <h2>{% trans "Профиль и безопасность" %}</h2>
+        <p>{% trans "Управляйте данными профиля, темой, языком интерфейса и параметрами безопасности в одном месте." %}</p>
+    </div>
+</section>
+
+<div class="settings-grid">
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "Профиль" %}</h2>
+                <p class="section-head__meta">{% trans "Изменения имени, email, языка, темы и уведомлений применяются к вашему аккаунту." %}</p>
+            </div>
+        </div>
+        <form method="post" enctype="multipart/form-data" class="app-form" novalidate data-submit-state>
+            {% csrf_token %}
+            <input type="hidden" name="tab" value="profile">
+            {% if user_form.non_field_errors %}<div class="alert alert-danger">{{ user_form.non_field_errors }}</div>{% endif %}
+            {% if profile_form.non_field_errors %}<div class="alert alert-danger">{{ profile_form.non_field_errors }}</div>{% endif %}
+
+            {% for field in user_form %}
+                {% include "partials/form_field.html" with field=field %}
+            {% endfor %}
+            {% for field in profile_form %}
+                {% include "partials/form_field.html" with field=field %}
+            {% endfor %}
+
+            <button class="btn btn-primary" type="submit" data-submit-button>{% trans "Сохранить изменения" %}</button>
+        </form>
+    </section>
+
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "Безопасность" %}</h2>
+                <p class="section-head__meta">{% trans "Смените пароль и держите доступ к аккаунту под контролем." %}</p>
+            </div>
+        </div>
+        <form method="post" class="app-form" novalidate data-submit-state>
+            {% csrf_token %}
+            <input type="hidden" name="tab" value="security">
+            {% if password_form.non_field_errors %}<div class="alert alert-danger">{{ password_form.non_field_errors }}</div>{% endif %}
+            {% for field in password_form %}
+                {% include "partials/form_field.html" with field=field %}
+            {% endfor %}
+            <button class="btn btn-primary" type="submit" data-submit-button>{% trans "Сменить пароль" %}</button>
+        </form>
+    </section>
+
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "Как это работает" %}</h2>
+                <p class="section-head__meta">{% trans "Тема и язык сохраняются в профиле. После следующего входа выбранные настройки будут применены автоматически." %}</p>
+            </div>
+        </div>
+        <div class="empty-state empty-state--inline">
+            <h3>{% trans "Текущая логика сохранена" %}</h3>
+            <p>{% trans "Настройки продолжают работать через существующую backend-логику без дополнительных зависимостей и без потери данных." %}</p>
+        </div>
+    </section>
+</div>
+{% endblock %}

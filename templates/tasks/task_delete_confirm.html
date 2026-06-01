@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<section class="card-surface text-center">
+    <h1>{% trans "Удалить задачу?" %}</h1>
+    <p>{{ task.title }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit">{% trans "Удалить" %}</button>
+        <a href="{% url 'tasks:detail' task.pk %}" class="btn btn-soft">{% trans "Отмена" %}</a>
+    </form>
+</section>
+{% endblock %}

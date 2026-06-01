@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Проекты" %} | TaskFlow{% endblock %}
+{% block topbar_title %}<h1>{% trans "Мои проекты" %}</h1>{% endblock %}
+{% block content %}
+<section class="page-intro">
+    <div>
+        <h2>{% trans "Проекты" %}</h2>
+        <p>{% trans "Группируйте задачи по направлениям, отслеживайте прогресс и держите дедлайны в одном месте." %}</p>
+    </div>
+</section>
+
+<div class="page-grid">
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "Список проектов" %}</h2>
+                <p class="section-head__meta">{% trans "Прогресс и количество задач считаются по реальным данным пользователя." %}</p>
+            </div>
+        </div>
+
+        <div class="project-card-grid">
+            {% for project in projects %}
+                <a href="{% url 'projects:detail' project.pk %}" class="project-card">
+                    <div>
+                        <h3>{{ project.title }}</h3>
+                        <p>{{ project.description|default:_("Описание пока не добавлено.")|truncatechars:110 }}</p>
+                    </div>
+                    <div class="project-progress">
+                        <span>{{ project.progress_percent }}%</span>
+                        <div class="progress" aria-label="{% blocktrans with title=project.title percent=project.progress_percent %}Прогресс проекта {{ title }}: {{ percent }} процентов{% endblocktrans %}">
+                            <div class="progress-bar" style="width: {{ project.progress_percent }}%; background: {{ project.color }}"></div>
+                        </div>
+                        <small>{{ project.task_count }} {% trans "задач" %}</small>
+                    </div>
+                </a>
+            {% empty %}
+                <div class="empty-state">
+                    <h3>{% trans "Проектов пока нет" %}</h3>
+                    <p>{% trans "Создайте первый проект, чтобы объединять задачи и видеть общий прогресс." %}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "Новый проект" %}</h2>
+                <p class="section-head__meta">{% trans "Заполните основные поля, затем задачи можно будет привязать к проекту." %}</p>
+            </div>
+        </div>
+        <form method="post" class="app-form mt-3" novalidate data-submit-state>
+            {% csrf_token %}
+            {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+            {% for field in form %}
+                {% include "partials/form_field.html" with field=field %}
+            {% endfor %}
+            <button class="btn btn-primary w-100" type="submit" data-submit-button>{% trans "Создать проект" %}</button>
+        </form>
+    </section>
+</div>
+{% endblock %}

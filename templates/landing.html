@@ -1,0 +1,220 @@
+{% extends 'guest_base.html' %}
+{% load i18n %}
+{% block title %}TaskFlow{% endblock %}
+{% block content %}
+<div class="landing-ref">
+    <div class="landing-ref__glow landing-ref__glow--left"></div>
+    <div class="landing-ref__glow landing-ref__glow--right"></div>
+    <div class="landing-ref__waves">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <header class="landing-ref__header">
+        <a href="{% url 'landing' %}" class="landing-ref__brand">
+            <span class="landing-ref__brand-icon">
+                <i></i><i></i><i></i><i></i><i></i>
+            </span>
+            <span>TaskFlow</span>
+        </a>
+
+        <div class="landing-ref__actions">
+            <form action="/i18n/setlang/" method="post" class="landing-ref__lang-form" data-language-switch data-next-ru="{{ language_next_ru }}" data-next-en="{{ language_next_en }}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}" data-language-next>
+                <select name="language" class="landing-ref__lang" onchange="this.form.requestSubmit()">
+                    {% get_current_language as CURRENT_LANGUAGE %}
+                    <option value="ru" {% if CURRENT_LANGUAGE == 'ru' %}selected{% endif %}>RU</option>
+                    <option value="en" {% if CURRENT_LANGUAGE == 'en' %}selected{% endif %}>EN</option>
+                </select>
+            </form>
+            <a href="{% url 'accounts:login' %}" class="landing-ref__login">{% trans "Войти" %}</a>
+        </div>
+        <div class="landing-ref__mobile-actions">
+            <form action="/i18n/setlang/" method="post" class="landing-ref__lang-form landing-ref__lang-form--mobile" data-language-switch data-next-ru="{{ language_next_ru }}" data-next-en="{{ language_next_en }}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}" data-language-next>
+                <select name="language" class="landing-ref__lang" onchange="this.form.requestSubmit()">
+                    {% get_current_language as CURRENT_LANGUAGE %}
+                    <option value="ru" {% if CURRENT_LANGUAGE == 'ru' %}selected{% endif %}>RU</option>
+                    <option value="en" {% if CURRENT_LANGUAGE == 'en' %}selected{% endif %}>EN</option>
+                </select>
+            </form>
+        </div>
+    </header>
+
+    <main class="landing-ref__hero">
+        <section class="landing-ref__content">
+            <div class="landing-ref__badge">{% trans "Простой способ управлять задачами" %}</div>
+            <h1 class="landing-ref__title">
+                <span class="landing-ref__title-line">{% trans "Планируйте задачи" %}</span>
+                <span class="landing-ref__title-line">{% trans "спокойно и" %}</span>
+                <span class="landing-ref__title-line">{% trans "достигайте" %} <span>{% trans "целей" %}</span></span>
+            </h1>
+            <p class="landing-ref__description">
+                {% trans "TaskFlow помогает вам организовать работу, контролировать задачи и повышать продуктивность каждый день." %}
+            </p>
+            <div class="landing-ref__cta">
+                <a href="{% url 'accounts:register' %}" class="landing-ref__primary">{% trans "Начать бесплатно" %}</a>
+                <a href="#about" class="landing-ref__secondary">{% trans "Узнать больше" %} <span>&rarr;</span></a>
+            </div>
+
+            <div class="landing-ref__features" id="features">
+                <article class="landing-ref__feature">
+                    <span class="landing-ref__feature-icon landing-ref__feature-icon--check"></span>
+                    <h3>{% trans "Удобные задачи" %}</h3>
+                    <p>{% trans "Единый список задач, дедлайнов и приоритетов без визуального шума." %}</p>
+                </article>
+                <article class="landing-ref__feature">
+                    <span class="landing-ref__feature-icon landing-ref__feature-icon--chart"></span>
+                    <h3>{% trans "Статистика и отчёты" %}</h3>
+                    <p>{% trans "Наглядный прогресс, понятные метрики и контроль результатов по дням." %}</p>
+                </article>
+                <article class="landing-ref__feature">
+                    <span class="landing-ref__feature-icon landing-ref__feature-icon--team"></span>
+                    <h3>{% trans "Командная работа" %}</h3>
+                    <p>{% trans "Совместная работа над задачами и проектами с прозрачным контекстом." %}</p>
+                </article>
+                <article class="landing-ref__feature">
+                    <span class="landing-ref__feature-icon landing-ref__feature-icon--device"></span>
+                    <h3>{% trans "Доступ на всех устройствах" %}</h3>
+                    <p>{% trans "Одинаково чистый опыт работы на ноутбуке, планшете и мобильном." %}</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="landing-ref__preview" aria-label="TaskFlow dashboard demo">
+            <div class="landing-ref__preview-shell">
+            <div class="landing-ref__mockup">
+                <aside class="landing-ref__mockup-sidebar">
+                    <div class="landing-ref__mockup-logo">
+                        <span class="landing-ref__brand-icon landing-ref__brand-icon--small">
+                            <i></i><i></i><i></i><i></i><i></i>
+                        </span>
+                        <strong>TaskFlow</strong>
+                    </div>
+                    <nav class="landing-ref__mockup-nav">
+                        <a class="is-active" href="#"><span></span>{% trans "Дашборд" %}</a>
+                        <a href="#"><span></span>{% trans "Задачи" %}</a>
+                        <a href="#"><span></span>{% trans "Проекты" %}</a>
+                        <a href="#"><span></span>{% trans "Календарь" %}</a>
+                        <a href="#"><span></span>Kanban</a>
+                        <a href="#"><span></span>{% trans "Статистика" %}</a>
+                        <a href="#"><span></span>{% trans "Теги" %}</a>
+                        <a href="#"><span></span>{% trans "Уведомления" %}</a>
+                        <a href="#"><span></span>{% trans "Настройки" %}</a>
+                    </nav>
+                    <a class="landing-ref__mockup-logout" href="#"><span></span>{% trans "Выход" %}</a>
+                </aside>
+
+                <div class="landing-ref__mockup-main">
+                    <div class="landing-ref__mockup-top">
+                        <h2>{% trans "Дашборд" %}</h2>
+                        <div class="landing-ref__mockup-user">
+                            <span class="landing-ref__mockup-bell"></span>
+                            <div class="landing-ref__mockup-avatar"></div>
+                            <strong>{% trans "Алексей" %}</strong>
+                        </div>
+                    </div>
+
+                    <div class="landing-ref__stats">
+                        <article class="landing-ref__stat-card">
+                            <small>{% trans "Всего задач" %}</small>
+                            <div>
+                                <strong>24</strong>
+                                <span class="stat-icon stat-icon--indigo"></span>
+                            </div>
+                        </article>
+                        <article class="landing-ref__stat-card">
+                            <small>{% trans "В работе" %}</small>
+                            <div>
+                                <strong>8</strong>
+                                <span class="stat-icon stat-icon--violet"></span>
+                            </div>
+                        </article>
+                        <article class="landing-ref__stat-card">
+                            <small>{% trans "Выполнено" %}</small>
+                            <div>
+                                <strong>12</strong>
+                                <span class="stat-icon stat-icon--mint"></span>
+                            </div>
+                        </article>
+                        <article class="landing-ref__stat-card">
+                            <small>{% trans "Просрочено" %}</small>
+                            <div>
+                                <strong class="is-danger">2</strong>
+                                <span class="stat-icon stat-icon--rose"></span>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="landing-ref__mockup-panels">
+                        <article class="landing-ref__tasks-card">
+                            <div class="landing-ref__panel-title">{% trans "Ближайшие задачи" %}</div>
+                            <div class="landing-ref__task-list">
+                                <div class="landing-ref__task-item"><span class="dot dot-blue"></span><p>{% trans "Подготовить отчёт" %}</p><time>{% trans "Сегодня, 12:00" %}</time></div>
+                                <div class="landing-ref__task-item"><span class="dot dot-amber"></span><p>{% trans "Разработка дизайна" %}</p><time>{% trans "Сегодня, 14:30" %}</time></div>
+                                <div class="landing-ref__task-item"><span class="dot dot-coral"></span><p>{% trans "Тестирование формы" %}</p><time>{% trans "Завтра, 10:00" %}</time></div>
+                                <div class="landing-ref__task-item"><span class="dot dot-teal"></span><p>{% trans "Встреча с командой" %}</p><time>{% trans "Завтра, 13:00" %}</time></div>
+                                <div class="landing-ref__task-item"><span class="dot dot-violet"></span><p>{% trans "Финальная проверка" %}</p><time>{% trans "25 мая, 16:00" %}</time></div>
+                            </div>
+                            <a href="#" class="landing-ref__task-link">{% trans "Все задачи" %}</a>
+                        </article>
+
+                        <article class="landing-ref__chart-panel">
+                            <div class="landing-ref__panel-title">{% trans "Прогресс задач" %}</div>
+                            <div class="landing-ref__chart">
+                                <div class="landing-ref__chart-grid"></div>
+                                <div class="landing-ref__chart-line">
+                                    <span style="left: 0%; top: 76%;"></span>
+                                    <span style="left: 15%; top: 63%;"></span>
+                                    <span style="left: 30%; top: 63%;"></span>
+                                    <span style="left: 45%; top: 48%;"></span>
+                                    <span style="left: 60%; top: 48%;"></span>
+                                    <span style="left: 75%; top: 30%;"></span>
+                                    <span style="left: 86%; top: 30%;"></span>
+                                    <span style="left: 100%; top: 6%;"></span>
+                                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                                        <polyline points="0,76 15,63 30,63 45,48 60,48 75,30 86,30 100,6"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="landing-ref__chart-footer">
+                                    <div class="landing-ref__chart-days">
+                                        <span>{% trans "Пн" %}</span>
+                                        <span>{% trans "Вт" %}</span>
+                                        <span>{% trans "Ср" %}</span>
+                                        <span>{% trans "Чт" %}</span>
+                                        <span>{% trans "Пт" %}</span>
+                                        <span>{% trans "Сб" %}</span>
+                                        <span>{% trans "Вс" %}</span>
+                                    </div>
+                                    <div class="landing-ref__chart-progress">
+                                        <strong>68%</strong>
+                                        <span>{% trans "выполнено" %}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+    </main>
+
+    <section class="landing-ref__trust" id="about">
+        <p>{% trans "Нам доверяют команды по всему миру" %}</p>
+        <div class="landing-ref__trust-logos">
+            <span>Microsoft</span>
+            <span>Google</span>
+            <span>slack</span>
+            <span>Dropbox</span>
+            <span>Notion</span>
+        </div>
+    </section>
+
+    <div id="pricing" hidden></div>
+    <div id="blog" hidden></div>
+</div>
+{% endblock %}

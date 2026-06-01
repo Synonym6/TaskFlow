@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load i18n widget_tweaks %}
+{% block title %}{% trans "Задачи" %} | TaskFlow{% endblock %}
+{% block topbar_title %}<h1>{% trans "Мои задачи" %}</h1>{% endblock %}
+{% block content %}
+<section class="page-intro">
+    <div>
+        <h2>{% trans "Задачи и фильтры" %}</h2>
+        <p>{% trans "Управляйте списком задач, быстро находите нужные и создавайте новые без лишних переходов." %}</p>
+    </div>
+    <a href="{% url 'tasks:create' %}" class="btn btn-primary">{% trans "Новая задача" %}</a>
+</section>
+
+<div class="page-grid">
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "Фильтры" %}</h2>
+                <p class="section-head__meta">{% trans "Отберите задачи по статусу, приоритету, проекту, тегу и сроку." %}</p>
+            </div>
+            <a href="{% url 'tasks:list' %}" class="btn btn-soft">{% trans "Сбросить" %}</a>
+        </div>
+
+        <form method="get" class="filter-grid app-form" novalidate data-submit-state>
+            <div class="app-form__field">
+                <label for="task-search" class="app-form__label">{% trans "Поиск" %}</label>
+                <input id="task-search" type="text" name="search" value="{{ request.GET.search }}" class="form-control app-input" placeholder="{% trans 'Поиск задач...' %}">
+            </div>
+            <div class="app-form__field">
+                <label for="task-status" class="app-form__label">{% trans "Статус" %}</label>
+                <select id="task-status" name="status" class="form-select app-select">
+                    <option value="">{% trans "Все статусы" %}</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="app-form__field">
+                <label for="task-priority" class="app-form__label">{% trans "Приоритет" %}</label>
+                <select id="task-priority" name="priority" class="form-select app-select">
+                    <option value="">{% trans "Все приоритеты" %}</option>
+                    {% for value, label in priority_choices %}
+                        <option value="{{ value }}" {% if request.GET.priority == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="app-form__field">
+                <label for="task-project" class="app-form__label">{% trans "Проект" %}</label>
+                <select id="task-project" name="project" class="form-select app-select">
+                    <option value="">{% trans "Все проекты" %}</option>
+                    {% for project in projects %}
+                        <option value="{{ project.pk }}" {% if request.GET.project == project.pk|stringformat:'s' %}selected{% endif %}>{{ project.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="app-form__field">
+                <label for="task-tag" class="app-form__label">{% trans "Тег" %}</label>
+                <select id="task-tag" name="tag" class="form-select app-select">
+                    <option value="">{% trans "Все теги" %}</option>
+                    {% for tag in tags %}
+                        <option value="{{ tag.pk }}" {% if request.GET.tag == tag.pk|stringformat:'s' %}selected{% endif %}>{{ tag.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="app-form__field">
+                <label for="task-deadline" class="app-form__label">{% trans "Срок" %}</label>
+                <select id="task-deadline" name="deadline" class="form-select app-select">
+                    <option value="">{% trans "Все сроки" %}</option>
+                    <option value="overdue" {% if request.GET.deadline == 'overdue' %}selected{% endif %}>{% trans "Просроченные" %}</option>
+                </select>
+            </div>
+            <div class="app-form__field">
+                <label for="task-sort" class="app-form__label">{% trans "Сортировка" %}</label>
+                <select id="task-sort" name="sort" class="form-select app-select">
+                    <option value="">{% trans "Без сортировки" %}</option>
+                    <option value="deadline" {% if request.GET.sort == 'deadline' %}selected{% endif %}>{% trans "По дедлайну" %}</option>
+                    <option value="created" {% if request.GET.sort == 'created' %}selected{% endif %}>{% trans "По дате создания" %}</option>
+                    <option value="priority" {% if request.GET.sort == 'priority' %}selected{% endif %}>{% trans "По приоритету" %}</option>
+                </select>
+            </div>
+            <div class="filter-grid__actions">
+                <button class="btn btn-primary" type="submit" data-submit-button>{% trans "Применить" %}</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="card-surface">
+        <div class="section-head">
+            <div>
+                <h2>{% trans "Список задач" %}</h2>
+                <p class="section-head__meta">{% trans "Все задачи текущего пользователя с быстрым переходом в детали." %}</p>
+            </div>
+            <a href="{% url 'tasks:create' %}" class="btn btn-primary">{% trans "Новая задача" %}</a>
+        </div>
+        {% if tasks %}
+            <div class="task-table">
+                {% for task in tasks %}
+                    <a href="{% url 'tasks:detail' task.pk %}" class="task-row">
+                        <div>
+                            <strong>{{ task.title }}</strong>
+                            <p class="mb-0 text-muted">{% if task.project %}{{ task.project.title }}{% else %}{% trans "Без проекта" %}{% endif %}</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="status-chip status-{{ task.status }}">{{ task.get_status_display }}</span>
+                            <span class="priority-chip priority-{{ task.priority }}">{{ task.get_priority_display }}</span>
+                            <span class="{% if task.is_overdue %}text-danger{% endif %}">{{ task.deadline|date:"d.m H:i"|default:"-" }}</span>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>{% trans "Задачи не найдены" %}</h3>
+                <p>{% trans "Попробуйте изменить фильтры или создайте первую задачу." %}</p>
+                <a href="{% url 'tasks:create' %}" class="btn btn-primary">{% trans "Создать задачу" %}</a>
+            </div>
+        {% endif %}
+    </section>
+
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "Быстрое создание" %}</h2>
+                <p class="section-head__meta">{% trans "Добавьте задачу прямо со страницы списка." %}</p>
+            </div>
+        </div>
+        <form method="post" class="app-form mt-3" novalidate data-submit-state>
+            {% csrf_token %}
+            {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+            {% for field in form %}
+                {% include "partials/form_field.html" with field=field %}
+            {% endfor %}
+            <button class="btn btn-primary w-100" type="submit" data-submit-button>{% trans "Создать задачу" %}</button>
+        </form>
+    </section>
+</div>
+{% endblock %}

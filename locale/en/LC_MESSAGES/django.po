@@ -1,0 +1,1543 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: TaskFlow 1.0\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: apps\dashboard\views.py
+msgid "%(value)s%% с прошлого месяца"
+msgstr "%(value)s%% since last month"
+
+#: templates\landing.html
+msgid "25 мая, 16:00"
+msgstr ""
+
+#: apps\tasks\views.py
+msgid "Kanban обновлен"
+msgstr ""
+
+#: templates\kanban\kanban.html
+msgid "Kanban-доска"
+msgstr ""
+
+#: templates\landing.html
+msgid ""
+"TaskFlow помогает вам организовать работу, контролировать задачи и повышать "
+"продуктивность каждый день."
+msgstr ""
+
+#: apps\accounts\forms.py apps\accounts\models.py
+msgid "Аватар"
+msgstr "Avatar"
+
+#: apps\tasks\models.py
+msgid "Автор"
+msgstr "Author"
+
+#: apps\accounts\forms.py
+msgid "Аккаунт отключен."
+msgstr "Account is disabled."
+
+#: apps\accounts\apps.py
+msgid "Аккаунты"
+msgstr ""
+
+#: templates\projects\project_detail.html
+msgid "Активности пока нет"
+msgstr ""
+
+#: templates\dashboard\dashboard.html
+msgid "Активность"
+msgstr "Activity"
+
+#: templates\dashboard\dashboard.html
+msgid "Активность появится после первых действий."
+msgstr "Activity will appear after your first actions."
+
+#: templates\tasks\task_detail.html
+msgid "Активность появится после первых изменений задачи."
+msgstr ""
+
+#: templates\projects\project_detail.html
+msgid "Активность проекта"
+msgstr ""
+
+#: templates\dashboard\dashboard.html
+msgid "Активные проекты"
+msgstr "Active projects"
+
+#: templates\landing.html
+msgid "Алексей"
+msgstr ""
+
+#: templates\statistics\statistics.html
+msgid "Аналитика задач"
+msgstr ""
+
+#: apps\projects\forms.py
+msgid "Архивные проекты остаются в системе, но не считаются активными."
+msgstr ""
+
+#: templates\kanban\kanban.html templates\tasks\task_detail.html
+#: templates\tasks\task_list.html
+msgid "Без проекта"
+msgstr "No project"
+
+#: templates\tasks\task_list.html
+msgid "Без сортировки"
+msgstr "No sorting"
+
+#: templates\settings\settings.html
+msgid "Безопасность"
+msgstr "Security"
+
+#: templates\dashboard\dashboard.html templates\landing.html
+msgid "Ближайшие задачи"
+msgstr "Upcoming tasks"
+
+#: templates\dashboard\dashboard.html
+msgid "Ближайших задач пока нет."
+msgstr "No upcoming tasks yet."
+
+#: templates\landing.html
+msgid "Блог"
+msgstr ""
+
+#: templates\tasks\task_list.html
+msgid "Быстрое создание"
+msgstr "Quick create"
+
+#: apps\projects\models.py
+msgid "В архиве"
+msgstr ""
+
+#: templates\projects\project_detail.html
+msgid "В проекте пока нет задач"
+msgstr ""
+
+#: apps\dashboard\views.py apps\projects\views.py apps\tasks\models.py
+#: templates\kanban\kanban.html templates\landing.html
+#: templates\statistics\statistics.html
+msgid "В работе"
+msgstr "In progress"
+
+#: templates\kanban\kanban.html
+msgid "В этой колонке пока нет задач."
+msgstr ""
+
+#: templates\auth\password_reset_placeholder.html
+msgid "Вернуться ко входу"
+msgstr "Back to sign in"
+
+#: apps\projects\models.py apps\tasks\models.py
+#: templates\dashboard\dashboard.html
+msgid "Владелец"
+msgstr "Owner"
+
+#: templates\landing.html
+msgid "Возможности"
+msgstr ""
+
+#: templates\auth\login.html
+msgid "Войдите в свой аккаунт"
+msgstr "Sign in to your account"
+
+#: templates\auth\login.html templates\auth\register.html
+#: templates\landing.html
+msgid "Войти"
+msgstr "Sign in"
+
+#: templates\auth\password_reset_placeholder.html
+msgid "Восстановление пароля"
+msgstr "Password reset"
+
+#: apps\dashboard\views.py
+msgid "Вот что происходит с вашими задачами сегодня."
+msgstr "Here is what is happening with your tasks today."
+
+#: apps\dashboard\views.py templates\calendar\calendar.html
+#: templates\landing.html
+msgid "Вс"
+msgstr "Sun"
+
+#: templates\statistics\statistics.html
+msgid ""
+"Все графики и показатели строятся по реальным задачам и проектам текущего "
+"пользователя."
+msgstr ""
+
+#: templates\dashboard\dashboard.html templates\landing.html
+msgid "Все задачи"
+msgstr "All tasks"
+
+#: templates\tasks\task_list.html
+msgid "Все задачи текущего пользователя с быстрым переходом в детали."
+msgstr ""
+
+#: templates\projects\project_detail.html
+msgid "Все задачи этого проекта с актуальными сроками и статусами."
+msgstr ""
+
+#: templates\tasks\task_list.html
+msgid "Все приоритеты"
+msgstr "All priorities"
+
+#: templates\dashboard\dashboard.html templates\projects\project_detail.html
+#: templates\tasks\task_list.html
+msgid "Все проекты"
+msgstr "All projects"
+
+#: templates\tasks\task_list.html
+msgid "Все сроки"
+msgstr "All due dates"
+
+#: templates\tasks\task_list.html
+msgid "Все статусы"
+msgstr "All statuses"
+
+#: templates\tasks\task_list.html
+msgid "Все теги"
+msgstr "All tags"
+
+#: templates\notifications\notification_list.html
+msgid "Все уведомления"
+msgstr ""
+
+#: apps\dashboard\views.py templates\landing.html
+#: templates\projects\project_detail.html templates\statistics\statistics.html
+msgid "Всего задач"
+msgstr "Total tasks"
+
+#: templates\landing.html
+msgid "Встреча с командой"
+msgstr ""
+
+#: templates\dashboard\dashboard.html
+msgid "Вся активность"
+msgstr "All activity"
+
+#: apps\dashboard\views.py templates\calendar\calendar.html
+#: templates\landing.html
+msgid "Вт"
+msgstr "Tue"
+
+#: templates\auth\login.html
+msgid "Вход"
+msgstr "Sign in"
+
+#: templates\dashboard\dashboard.html
+msgid "Вы"
+msgstr "You"
+
+#: apps\accounts\views.py
+msgid "Вы вошли в аккаунт."
+msgstr "You are signed in."
+
+#: apps\accounts\views.py
+msgid "Вы вышли из системы."
+msgstr "You have signed out."
+
+#: templates\calendar\calendar.html
+msgid "Выберите удобный режим просмотра и откройте задачи прямо из календаря."
+msgstr ""
+"Choose a convenient view mode and open tasks directly from the calendar."
+
+#: apps\tasks\models.py
+msgid "Выполнен"
+msgstr "Completed"
+
+#: apps\tasks\models.py
+msgid "Выполнена"
+msgstr ""
+
+#: templates\statistics\statistics.html
+msgid "Выполнение по дням"
+msgstr ""
+
+#: apps\dashboard\views.py templates\landing.html
+#: templates\statistics\statistics.html
+msgid "Выполнено"
+msgstr "Completed"
+
+#: apps\tasks\models.py
+msgid "Высокий"
+msgstr "High"
+
+#: templates\base.html templates\landing.html
+msgid "Выход"
+msgstr "Log out"
+
+#: apps\projects\views.py apps\tasks\models.py templates\kanban\kanban.html
+msgid "Готово"
+msgstr "Done"
+
+#: templates\projects\project_list.html
+msgid ""
+"Группируйте задачи по направлениям, отслеживайте прогресс и держите дедлайны"
+" в одном месте."
+msgstr ""
+
+#: apps\dashboard\apps.py templates\base.html
+#: templates\dashboard\dashboard.html templates\landing.html
+msgid "Дашборд"
+msgstr "Dashboard"
+
+#: apps\projects\models.py apps\tasks\models.py
+#: templates\projects\project_detail.html templates\tasks\task_detail.html
+msgid "Дедлайн"
+msgstr "Deadline"
+
+#: apps\projects\forms.py
+msgid "Дедлайн проекта не должен быть в прошлом."
+msgstr ""
+
+#: apps\notifications\models.py apps\notifications\services.py
+msgid "Дедлайн сегодня"
+msgstr "Deadline today"
+
+#: apps\tasks\models.py
+msgid "Действие"
+msgstr ""
+
+#: templates\dashboard\dashboard.html
+msgid "Действия"
+msgstr "Actions"
+
+#: templates\calendar\calendar.html
+msgid "День"
+msgstr "Day"
+
+#: templates\tasks\task_detail.html
+msgid "Добавить комментарий"
+msgstr ""
+
+#: templates\tasks\task_detail.html
+msgid "Добавить пункт"
+msgstr ""
+
+#: apps\tasks\views.py
+msgid "Добавлен комментарий"
+msgstr ""
+
+#: apps\tasks\views.py
+msgid "Добавлен чеклист"
+msgstr ""
+
+#: templates\tasks\task_list.html
+msgid "Добавьте задачу прямо со страницы списка."
+msgstr ""
+
+#: templates\projects\project_detail.html
+msgid "Добавьте первую задачу, чтобы начать отслеживать прогресс проекта."
+msgstr ""
+
+#: templates\tasks\task_detail.html
+msgid ""
+"Добавьте первый комментарий, если хотите зафиксировать решение или заметку."
+msgstr ""
+
+#: templates\tasks\task_detail.html
+msgid "Добавьте первый пункт, чтобы разбить задачу на шаги."
+msgstr ""
+
+#: templates\auth\login.html
+msgid "Добро пожаловать!"
+msgstr "Welcome!"
+
+#: apps\dashboard\views.py
+msgid "Доброе утро"
+msgstr "Good morning"
+
+#: apps\dashboard\views.py
+msgid "Добрый вечер"
+msgstr "Good evening"
+
+#: apps\dashboard\views.py
+msgid "Добрый день"
+msgstr "Good afternoon"
+
+#: templates\landing.html
+msgid "Доступ на всех устройствах"
+msgstr ""
+
+#: templates\landing.html
+msgid "Единый список задач, дедлайнов и приоритетов без визуального шума."
+msgstr ""
+
+#: apps\tasks\models.py
+msgid "Журнал активности"
+msgstr ""
+
+#: templates\tasks\task_detail.html
+msgid "Журнал показывает реальные изменения по задаче без фейковых событий."
+msgstr ""
+
+#: templates\projects\project_detail.html
+msgid "Журнал проекта появится после первых изменений и задач."
+msgstr ""
+
+#: templates\auth\login.html
+msgid "Забыли пароль?"
+msgstr "Forgot password?"
+
+#: templates\landing.html
+msgid "Завтра, 10:00"
+msgstr ""
+
+#: templates\landing.html
+msgid "Завтра, 13:00"
+msgstr ""
+
+#: apps\notifications\models.py
+msgid "Заголовок"
+msgstr ""
+
+#: apps\tasks\models.py templates\dashboard\dashboard.html
+msgid "Задача"
+msgstr "Task"
+
+#: apps\tasks\views.py
+msgid "Задача %(title)s перемещена"
+msgstr ""
+
+#: apps\tasks\views.py
+msgid "Задача %(title)s удалена."
+msgstr ""
+
+#: apps\notifications\models.py apps\notifications\services.py
+msgid "Задача выполнена"
+msgstr "Task completed"
+
+#: apps\tasks\views.py
+msgid "Задача обновлена."
+msgstr ""
+
+#: apps\notifications\services.py
+msgid "Задача просрочена"
+msgstr ""
+
+#: apps\tasks\views.py
+msgid "Задача создана."
+msgstr ""
+
+#: apps\tasks\apps.py apps\tasks\models.py templates\base.html
+#: templates\landing.html templates\tasks\task_list.html
+msgid "Задачи"
+msgstr "Tasks"
+
+#: templates\tasks\task_list.html
+msgid "Задачи и фильтры"
+msgstr ""
+
+#: templates\tasks\task_list.html
+msgid "Задачи не найдены"
+msgstr "No tasks found"
+
+#: templates\projects\project_detail.html
+msgid "Задачи проекта"
+msgstr ""
+
+#: templates\base.html
+msgid "Закрыть меню"
+msgstr "Close menu"
+
+#: apps\tasks\models.py
+msgid "Запись активности"
+msgstr ""
+
+#: apps\accounts\forms.py
+msgid "Заполните все обязательные поля."
+msgstr "Fill in all required fields."
+
+#: templates\tasks\task_form.html
+msgid ""
+"Заполните основные параметры задачи. Все проверки выполняются на сервере, "
+"поэтому данные не потеряются при ошибке."
+msgstr ""
+
+#: templates\projects\project_list.html
+msgid "Заполните основные поля, затем задачи можно будет привязать к проекту."
+msgstr ""
+
+#: apps\accounts\forms.py
+msgid "Запомнить меня"
+msgstr "Remember me"
+
+#: templates\errors\404.html
+msgid "Запрошенная страница не существует или была перемещена."
+msgstr ""
+
+#: templates\auth\login.html
+msgid "Зарегистрироваться"
+msgstr "Register"
+
+#: templates\notifications\notification_list.html
+msgid ""
+"Здесь собраны реальные напоминания о дедлайнах, прогрессе проектов и "
+"завершении задач."
+msgstr ""
+
+#: apps\tasks\views.py
+msgid "Изменен статус"
+msgstr ""
+
+#: templates\settings\settings.html
+msgid ""
+"Изменения имени, email, языка, темы и уведомлений применяются к вашему "
+"аккаунту."
+msgstr ""
+"Changes to name, email, language, theme, and notifications apply to your "
+"account."
+
+#: templates\tags\tag_list.html
+msgid "Изменить"
+msgstr ""
+
+#: templates\projects\project_detail.html
+msgid ""
+"Изменяйте только данные текущего проекта. Удаление остаётся отдельным "
+"опасным действием."
+msgstr ""
+
+#: apps\accounts\forms.py
+msgid "Имя"
+msgstr "Name"
+
+#: templates\tags\tag_list.html
+msgid ""
+"Используйте теги для быстрой фильтрации задач и аккуратной группировки по "
+"темам."
+msgstr ""
+
+#: templates\tasks\task_detail.html
+msgid "История активности"
+msgstr ""
+
+#: templates\tasks\task_detail.html
+msgid "История пока пуста"
+msgstr ""
+
+#: apps\projects\views.py apps\tasks\models.py templates\kanban\kanban.html
+msgid "К выполнению"
+msgstr "To do"
+
+#: templates\tasks\task_detail.html
+msgid "К списку"
+msgstr ""
+
+#: templates\settings\settings.html
+msgid "Как это работает"
+msgstr "How it works"
+
+#: templates\base.html templates\calendar\calendar.html
+#: templates\dashboard\dashboard.html templates\landing.html
+msgid "Календарь"
+msgstr "Calendar"
+
+#: templates\calendar\calendar.html
+msgid "Календарь задач"
+msgstr "Task calendar"
+
+#: templates\notifications\notification_list.html
+msgid ""
+"Когда появятся дедлайны, изменения статусов и прогресс проектов, уведомления"
+" будут отображаться здесь."
+msgstr ""
+
+#: templates\tags\tag_list.html
+msgid "Количество задач считается по реальным связям текущего пользователя."
+msgstr ""
+
+#: templates\landing.html
+msgid "Командная работа"
+msgstr ""
+
+#: templates\tasks\task_detail.html
+msgid "Комментариев пока нет"
+msgstr ""
+
+#: apps\tasks\models.py templates\tasks\task_detail.html
+msgid "Комментарии"
+msgstr "Comments"
+
+#: apps\tasks\forms.py apps\tasks\models.py
+msgid "Комментарий"
+msgstr "Comment"
+
+#: templates\tasks\task_detail.html
+msgid "Комментарий сохраняется в базе и остаётся в истории задачи."
+msgstr ""
+
+#: templates\calendar\calendar.html
+msgid "Месяц"
+msgstr "Month"
+
+#: apps\tasks\forms.py
+msgid "Можно выбрать несколько тегов текущего пользователя."
+msgstr ""
+
+#: templates\tasks\task_list.html
+msgid "Мои задачи"
+msgstr ""
+
+#: templates\projects\project_list.html
+msgid "Мои проекты"
+msgstr ""
+
+#: templates\tags\tag_list.html
+msgid "Мои теги"
+msgstr ""
+
+#: templates\errors\500.html
+msgid ""
+"Мы уже работаем над проблемой. Попробуйте открыть главную страницу позже."
+msgstr ""
+
+#: templates\errors\404.html templates\errors\500.html
+msgid "На главную"
+msgstr ""
+
+#: templates\landing.html
+msgid "Наглядный прогресс, понятные метрики и контроль результатов по дням."
+msgstr ""
+
+#: apps\projects\models.py apps\tasks\models.py
+msgid "Название"
+msgstr "Title"
+
+#: templates\tags\tag_list.html
+msgid "Название должно быть уникальным в пределах вашего аккаунта."
+msgstr ""
+
+#: apps\tasks\models.py
+msgid "Название задачи обязательно."
+msgstr ""
+
+#: templates\landing.html
+msgid "Нам доверяют команды по всему миру"
+msgstr ""
+
+#: templates\base.html templates\landing.html templates\settings\settings.html
+msgid "Настройки"
+msgstr "Settings"
+
+#: templates\settings\settings.html
+msgid ""
+"Настройки продолжают работать через существующую backend-логику без "
+"дополнительных зависимостей и без потери данных."
+msgstr ""
+"Settings continue to use the existing backend logic without extra "
+"dependencies or data loss."
+
+#: templates\projects\project_detail.html
+msgid "Настройки проекта"
+msgstr ""
+
+#: templates\landing.html
+msgid "Начать бесплатно"
+msgstr ""
+
+#: apps\accounts\forms.py
+msgid "Неверный email или пароль."
+msgstr "Invalid email or password."
+
+#: templates\dashboard\dashboard.html
+msgid "Недавние задачи"
+msgstr "Recent tasks"
+
+#: templates\calendar\calendar.html templates\dashboard\dashboard.html
+msgid "Неделя"
+msgstr "Week"
+
+#: apps\tasks\views.py
+msgid "Недопустимый статус."
+msgstr ""
+
+#: templates\dashboard\dashboard.html
+msgid "Недостаточно данных для графика."
+msgstr "Not enough data for the chart."
+
+#: apps\tasks\views.py
+msgid "Некорректная задача."
+msgstr ""
+
+#: apps\tasks\views.py
+msgid "Некорректная позиция."
+msgstr ""
+
+#: apps\tasks\views.py
+msgid "Некорректный JSON."
+msgstr ""
+
+#: apps\accounts\admin.py
+msgid "Нельзя заблокировать себя."
+msgstr ""
+
+#: apps\tasks\forms.py
+msgid "Нельзя использовать чужой проект."
+msgstr ""
+
+#: apps\tasks\models.py
+msgid "Нельзя привязать задачу к чужому проекту."
+msgstr ""
+
+#: apps\tasks\forms.py
+msgid "Нельзя прикрепить чужой тег."
+msgstr ""
+
+#: apps\accounts\admin.py
+msgid "Нельзя снять с себя права staff."
+msgstr ""
+
+#: apps\accounts\admin.py
+msgid "Нельзя снять с себя права superuser."
+msgstr ""
+
+#: apps\tasks\forms.py apps\tasks\models.py
+msgid "Нельзя создать задачу с дедлайном в прошлом."
+msgstr ""
+
+#: apps\accounts\signals.py
+msgid "Нельзя удалить единственного superuser."
+msgstr ""
+
+#: apps\accounts\admin.py
+msgid "Нельзя удалить собственный superuser аккаунт."
+msgstr ""
+
+#: apps\tasks\forms.py
+msgid "Нельзя установить новый дедлайн в прошлом."
+msgstr ""
+
+#: templates\auth\login.html
+msgid "Нет аккаунта?"
+msgstr "No account?"
+
+#: templates\dashboard\dashboard.html
+msgid "Нет данных для сравнения"
+msgstr "No comparison data"
+
+#: templates\calendar\calendar.html
+msgid "Нет задач на выбранный период."
+msgstr "No tasks for the selected period."
+
+#: apps\tasks\models.py
+msgid "Низкий"
+msgstr "Low"
+
+#: apps\tasks\views.py templates\kanban\kanban.html
+#: templates\projects\project_detail.html templates\tasks\task_list.html
+msgid "Новая задача"
+msgstr "New task"
+
+#: apps\tasks\forms.py
+msgid ""
+"Новая задача не может получить прошедший дедлайн, если она ещё не завершена."
+msgstr ""
+
+#: apps\dashboard\views.py
+msgid "Новые данные в этом месяце"
+msgstr "New data this month"
+
+#: templates\dashboard\dashboard.html templates\projects\project_list.html
+msgid "Новый проект"
+msgstr "New project"
+
+#: apps\tasks\forms.py
+msgid "Новый пункт"
+msgstr "New item"
+
+#: templates\tags\tag_list.html
+msgid "Новый тег"
+msgstr ""
+
+#: templates\landing.html
+msgid "О нас"
+msgstr ""
+
+#: apps\accounts\models.py apps\projects\models.py apps\tasks\models.py
+msgid "Обновлен"
+msgstr "Updated"
+
+#: apps\projects\views.py
+msgid "Обновлен проект"
+msgstr ""
+
+#: apps\tasks\views.py
+msgid "Обновлен статус"
+msgstr ""
+
+#: apps\tasks\views.py
+msgid "Обновлен чеклист"
+msgstr ""
+
+#: apps\tasks\models.py
+msgid "Обновлена"
+msgstr "Updated"
+
+#: apps\tasks\views.py
+msgid "Обновлена задача"
+msgstr ""
+
+#: apps\tasks\views.py
+msgid "Обновлена задача %(title)s"
+msgstr ""
+
+#: templates\landing.html
+msgid "Одинаково чистый опыт работы на ноутбуке, планшете и мобильном."
+msgstr ""
+
+#: apps\projects\models.py apps\tasks\models.py
+msgid "Описание"
+msgstr "Description"
+
+#: templates\projects\project_list.html templates\tasks\task_detail.html
+msgid "Описание пока не добавлено."
+msgstr ""
+
+#: templates\projects\project_detail.html
+msgid "Описание проекта пока не заполнено."
+msgstr ""
+
+#: templates\tasks\task_detail.html
+msgid "Основная информация"
+msgstr ""
+
+#: templates\base.html
+msgid "Основная навигация"
+msgstr "Main navigation"
+
+#: templates\tasks\task_list.html
+msgid "Отберите задачи по статусу, приоритету, проекту, тегу и сроку."
+msgstr ""
+
+#: templates\tags\tag_list.html
+msgid "Открыть"
+msgstr ""
+
+#: templates\base.html templates\dashboard\dashboard.html
+msgid "Открыть меню"
+msgstr "Open menu"
+
+#: templates\dashboard\dashboard.html
+msgid "Открыть профиль"
+msgstr "Open profile"
+
+#: templates\tasks\task_delete_confirm.html templates\tasks\task_form.html
+msgid "Отмена"
+msgstr "Cancel"
+
+#: templates\notifications\notification_list.html
+msgid "Отметить всё как прочитанное"
+msgstr ""
+
+#: apps\tasks\admin.py
+msgid "Отметить выбранные задачи выполненными"
+msgstr ""
+
+#: apps\notifications\admin.py
+msgid "Отметить выбранные уведомления непрочитанными"
+msgstr ""
+
+#: apps\notifications\admin.py
+msgid "Отметить выбранные уведомления прочитанными"
+msgstr ""
+
+#: templates\tasks\task_detail.html
+msgid "Отмечайте маленькие шаги по задаче и держите прогресс под рукой."
+msgstr ""
+
+#: apps\accounts\forms.py
+msgid "Пароли не совпадают."
+msgstr "Passwords do not match."
+
+#: apps\accounts\forms.py
+msgid "Пароль"
+msgstr "Password"
+
+#: apps\accounts\views.py
+msgid "Пароль изменен."
+msgstr "Password changed."
+
+#: templates\base.html
+msgid "Перейти к содержимому"
+msgstr "Skip to content"
+
+#: templates\kanban\kanban.html
+msgid ""
+"Перетаскивайте карточки между колонками. Изменения статуса сохраняются в "
+"базе сразу после переноса."
+msgstr ""
+
+#: templates\kanban\kanban.html
+msgid "Перетащите карточку в соседнюю колонку, чтобы изменить статус."
+msgstr ""
+
+#: templates\landing.html
+msgid "Планируйте задачи"
+msgstr ""
+
+#: apps\dashboard\views.py templates\calendar\calendar.html
+#: templates\landing.html
+msgid "Пн"
+msgstr "Mon"
+
+#: templates\tasks\task_list.html
+msgid "По дате создания"
+msgstr ""
+
+#: templates\tasks\task_list.html
+msgid "По дедлайну"
+msgstr ""
+
+#: templates\statistics\statistics.html
+msgid "По приоритетам"
+msgstr ""
+
+#: templates\tasks\task_list.html
+msgid "По приоритету"
+msgstr ""
+
+#: templates\statistics\statistics.html
+msgid "По статусам"
+msgstr ""
+
+#: apps\accounts\forms.py
+msgid "Повтор пароля"
+msgstr "Repeat password"
+
+#: templates\landing.html
+msgid "Подготовить отчёт"
+msgstr ""
+
+#: apps\tasks\models.py
+msgid "Позиция"
+msgstr "Position"
+
+#: templates\tasks\task_list.html
+msgid "Поиск"
+msgstr "Search"
+
+#: templates\dashboard\dashboard.html
+msgid "Поиск задач, проектов..."
+msgstr "Search tasks, projects..."
+
+#: templates\tasks\task_list.html
+msgid "Поиск задач..."
+msgstr ""
+
+#: templates\statistics\statistics.html
+msgid "Пока нет данных для статистики"
+msgstr ""
+
+#: templates\auth\login.html templates\auth\register.html
+msgid "Показать пароль"
+msgstr ""
+
+#: templates\statistics\statistics.html
+msgid "Показывает изменение прогресса завершения задач по датам."
+msgstr ""
+
+#: apps\accounts\models.py apps\notifications\models.py apps\tasks\models.py
+msgid "Пользователь"
+msgstr "User"
+
+#: apps\accounts\forms.py
+msgid "Пользователь с таким email уже существует."
+msgstr "A user with this email already exists."
+
+#: templates\tasks\task_list.html
+msgid "Попробуйте изменить фильтры или создайте первую задачу."
+msgstr ""
+
+#: templates\projects\project_detail.html
+msgid "Последние реальные действия, связанные с этим проектом."
+msgstr ""
+
+#: templates\tasks\task_list.html
+msgid "Применить"
+msgstr "Apply"
+
+#: apps\tasks\models.py templates\dashboard\dashboard.html
+#: templates\tasks\task_list.html
+msgid "Приоритет"
+msgstr "Priority"
+
+#: templates\dashboard\dashboard.html templates\landing.html
+msgid "Прогресс задач"
+msgstr "Task progress"
+
+#: templates\projects\project_list.html
+msgid "Прогресс и количество задач считаются по реальным данным пользователя."
+msgstr ""
+
+#: apps\notifications\models.py apps\notifications\services.py
+msgid "Прогресс проекта"
+msgstr "Project progress"
+
+#: templates\statistics\statistics.html
+msgid "Прогресс проектов"
+msgstr ""
+
+#: apps\projects\models.py apps\tasks\models.py
+#: templates\dashboard\dashboard.html templates\tasks\task_detail.html
+#: templates\tasks\task_list.html
+msgid "Проект"
+msgstr "Project"
+
+#: apps\projects\views.py
+msgid "Проект %(title)s обновлен"
+msgstr ""
+
+#: apps\projects\views.py
+msgid "Проект %(title)s удален."
+msgstr ""
+
+#: apps\projects\views.py
+msgid "Проект обновлен."
+msgstr ""
+
+#: apps\projects\views.py
+msgid "Проект создан."
+msgstr ""
+
+#: templates\projects\project_list.html
+msgid "Проектов пока нет"
+msgstr ""
+
+#: templates\dashboard\dashboard.html
+msgid "Проектов пока нет."
+msgstr "No projects yet."
+
+#: apps\projects\apps.py apps\projects\models.py templates\base.html
+#: templates\landing.html templates\projects\project_list.html
+msgid "Проекты"
+msgstr "Projects"
+
+#: templates\calendar\calendar.html
+msgid ""
+"Просматривайте дедлайны по месяцам, неделям и дням. Каждая ссылка ведёт к "
+"реальной задаче или созданию новой на выбранную дату."
+msgstr ""
+"View deadlines by month, week, and day. Each link opens a real task or "
+"creates a new one for the selected date."
+
+#: templates\tasks\task_detail.html
+msgid ""
+"Просматривайте описание, чеклист, комментарии и историю активности в одном "
+"экране."
+msgstr ""
+
+#: templates\tasks\task_list.html
+msgid "Просроченные"
+msgstr "Overdue"
+
+#: apps\dashboard\views.py apps\notifications\models.py
+#: templates\dashboard\dashboard.html templates\landing.html
+#: templates\projects\project_detail.html templates\statistics\statistics.html
+msgid "Просрочено"
+msgstr "Overdue"
+
+#: templates\landing.html
+msgid "Простой способ управлять задачами"
+msgstr ""
+
+#: apps\accounts\models.py
+msgid "Профили"
+msgstr "Profiles"
+
+#: apps\accounts\models.py templates\settings\settings.html
+msgid "Профиль"
+msgstr "Profile"
+
+#: templates\settings\settings.html
+msgid "Профиль и безопасность"
+msgstr "Profile and security"
+
+#: apps\accounts\views.py
+msgid "Профиль обновлен."
+msgstr "Profile updated."
+
+#: templates\statistics\statistics.html
+msgid "Процент выполнения по каждому проекту пользователя."
+msgstr ""
+
+#: apps\notifications\models.py
+msgid "Прочитано"
+msgstr "Read"
+
+#: apps\dashboard\views.py templates\calendar\calendar.html
+#: templates\landing.html
+msgid "Пт"
+msgstr "Fri"
+
+#: apps\tasks\views.py
+msgid "Пункт чеклиста удален."
+msgstr ""
+
+#: templates\kanban\kanban.html
+msgid "Пусто"
+msgstr ""
+
+#: templates\base.html
+msgid "Рабочее пространство"
+msgstr "Workspace"
+
+#: templates\landing.html
+msgid "Разработка дизайна"
+msgstr ""
+
+#: templates\statistics\statistics.html
+msgid "Распределение задач по текущим статусам."
+msgstr ""
+
+#: templates\auth\register.html
+msgid "Регистрация"
+msgstr "Registration"
+
+#: apps\accounts\views.py
+msgid "Регистрация прошла успешно."
+msgstr "Registration completed successfully."
+
+#: templates\auth\register.html
+msgid "Регистрируйтесь и начните управлять своими задачами"
+msgstr ""
+
+#: templates\tags\tag_list.html
+msgid "Редактирование тега"
+msgstr ""
+
+#: templates\tasks\task_detail.html
+msgid "Редактировать"
+msgstr "Edit"
+
+#: apps\tasks\views.py
+msgid "Редактировать задачу"
+msgstr "Edit task"
+
+#: templates\calendar\calendar.html
+msgid "Режим календаря"
+msgstr "Calendar view mode"
+
+#: apps\accounts\models.py taskflow\settings.py
+msgid "Русский"
+msgstr "Russian"
+
+#: apps\dashboard\views.py templates\calendar\calendar.html
+#: templates\landing.html
+msgid "Сб"
+msgstr "Sat"
+
+#: templates\tasks\task_list.html
+msgid "Сбросить"
+msgstr "Reset"
+
+#: apps\accounts\models.py
+msgid "Светлая"
+msgstr "Light"
+
+#: templates\projects\project_detail.html
+msgid "Сводка только по текущему проекту, без данных из других разделов."
+msgstr ""
+
+#: apps\notifications\models.py
+msgid "Связанная задача"
+msgstr ""
+
+#: apps\notifications\models.py
+msgid "Связанный проект"
+msgstr ""
+
+#: templates\landing.html
+msgid "Сегодня, 12:00"
+msgstr ""
+
+#: templates\landing.html
+msgid "Сегодня, 14:30"
+msgstr ""
+
+#: apps\notifications\models.py
+msgid "Системное"
+msgstr "System"
+
+#: templates\statistics\statistics.html
+msgid "Сколько задач имеют высокий, средний и низкий приоритет."
+msgstr ""
+
+#: apps\notifications\models.py apps\notifications\services.py
+msgid "Скоро дедлайн"
+msgstr "Deadline soon"
+
+#: templates\settings\settings.html
+msgid "Смените пароль и держите доступ к аккаунту под контролем."
+msgstr "Change your password and keep account access under control."
+
+#: templates\settings\settings.html
+msgid "Сменить пароль"
+msgstr "Change password"
+
+#: templates\landing.html
+msgid "Совместная работа над задачами и проектами с прозрачным контекстом."
+msgstr ""
+
+#: templates\statistics\statistics.html
+msgid ""
+"Создайте первую задачу или проект, чтобы здесь появились графики и "
+"показатели."
+msgstr ""
+
+#: templates\projects\project_list.html
+msgid ""
+"Создайте первый проект, чтобы объединять задачи и видеть общий прогресс."
+msgstr ""
+
+#: templates\tags\tag_list.html
+msgid "Создайте первый тег, чтобы быстрее фильтровать задачи по темам."
+msgstr ""
+
+#: apps\accounts\models.py apps\projects\models.py apps\tasks\models.py
+msgid "Создан"
+msgstr "Created"
+
+#: apps\projects\views.py
+msgid "Создан проект"
+msgstr ""
+
+#: apps\projects\views.py
+msgid "Создан проект %(title)s"
+msgstr ""
+
+#: apps\tasks\models.py
+msgid "Создана"
+msgstr "Created"
+
+#: apps\tasks\views.py
+msgid "Создана задача"
+msgstr ""
+
+#: apps\tasks\views.py
+msgid "Создана задача %(title)s"
+msgstr ""
+
+#: templates\auth\register.html
+msgid "Создание аккаунта"
+msgstr "Create account"
+
+#: apps\notifications\models.py
+msgid "Создано"
+msgstr "Created"
+
+#: templates\auth\register.html
+msgid "Создать аккаунт"
+msgstr "Create account"
+
+#: templates\calendar\calendar.html templates\statistics\statistics.html
+#: templates\tasks\task_list.html
+msgid "Создать задачу"
+msgstr "Create task"
+
+#: templates\projects\project_list.html
+msgid "Создать проект"
+msgstr "Create project"
+
+#: templates\tags\tag_list.html
+msgid "Создать тег"
+msgstr ""
+
+#: apps\notifications\models.py
+msgid "Сообщение"
+msgstr "Message"
+
+#: templates\tasks\task_list.html
+msgid "Сортировка"
+msgstr "Sort"
+
+#: templates\projects\project_detail.html templates\tasks\task_form.html
+msgid "Сохранить"
+msgstr "Save"
+
+#: templates\settings\settings.html
+msgid "Сохранить изменения"
+msgstr "Save changes"
+
+#: templates\tags\tag_list.html
+msgid "Сохранить тег"
+msgstr ""
+
+#: templates\tasks\task_list.html
+msgid "Список задач"
+msgstr "Task list"
+
+#: templates\projects\project_list.html
+msgid "Список проектов"
+msgstr ""
+
+#: templates\tags\tag_list.html
+msgid "Список тегов"
+msgstr ""
+
+#: apps\dashboard\views.py templates\calendar\calendar.html
+#: templates\landing.html
+msgid "Ср"
+msgstr "Wed"
+
+#: apps\tasks\models.py
+msgid "Средний"
+msgstr "Medium"
+
+#: templates\dashboard\dashboard.html templates\tasks\task_list.html
+msgid "Срок"
+msgstr "Due date"
+
+#: templates\base.html templates\landing.html
+#: templates\projects\project_detail.html templates\statistics\statistics.html
+msgid "Статистика"
+msgstr "Statistics"
+
+#: templates\landing.html
+msgid "Статистика и отчёты"
+msgstr ""
+
+#: apps\tasks\models.py templates\dashboard\dashboard.html
+#: templates\tasks\task_list.html
+msgid "Статус"
+msgstr "Status"
+
+#: apps\tasks\views.py
+msgid "Статус задачи %(title)s изменен"
+msgstr ""
+
+#: templates\errors\404.html
+msgid "Страница не найдена"
+msgstr "Page not found"
+
+#: apps\tasks\forms.py
+msgid "Такой тег уже существует."
+msgstr ""
+
+#: templates\landing.html
+msgid "Тарифы"
+msgstr ""
+
+#: apps\tasks\models.py templates\tasks\task_list.html
+msgid "Тег"
+msgstr ""
+
+#: apps\tasks\views.py
+msgid "Тег обновлен."
+msgstr ""
+
+#: apps\tasks\views.py
+msgid "Тег создан."
+msgstr ""
+
+#: apps\tasks\views.py
+msgid "Тег удален."
+msgstr ""
+
+#: apps\tasks\models.py templates\base.html templates\landing.html
+#: templates\tags\tag_list.html templates\tasks\task_detail.html
+msgid "Теги"
+msgstr "Tags"
+
+#: templates\tags\tag_list.html
+msgid "Тегов пока нет"
+msgstr ""
+
+#: apps\tasks\models.py
+msgid "Текст"
+msgstr "Text"
+
+#: templates\settings\settings.html
+msgid "Текущая логика сохранена"
+msgstr "Existing logic is preserved"
+
+#: apps\accounts\forms.py apps\accounts\models.py
+msgid "Тема"
+msgstr "Theme"
+
+#: templates\settings\settings.html
+msgid ""
+"Тема и язык сохраняются в профиле. После следующего входа выбранные "
+"настройки будут применены автоматически."
+msgstr ""
+"Theme and language are saved in your profile. The selected settings will be "
+"applied automatically on your next sign-in."
+
+#: apps\accounts\models.py
+msgid "Темная"
+msgstr "Dark"
+
+#: apps\projects\views.py apps\tasks\models.py templates\kanban\kanban.html
+msgid "Тестирование"
+msgstr "Testing"
+
+#: templates\landing.html
+msgid "Тестирование формы"
+msgstr ""
+
+#: apps\notifications\models.py
+msgid "Тип"
+msgstr "Type"
+
+#: templates\dashboard\dashboard.html
+msgid "У вас пока нет задач. Создайте первую задачу."
+msgstr "You do not have tasks yet. Create your first task."
+
+#: apps\notifications\models.py
+msgid "Уведомление"
+msgstr ""
+
+#: templates\notifications\notification_list.html
+msgid "Уведомлений пока нет"
+msgstr ""
+
+#: apps\accounts\forms.py apps\notifications\apps.py
+#: apps\notifications\models.py templates\base.html templates\landing.html
+#: templates\notifications\notification_list.html
+msgid "Уведомления"
+msgstr "Notifications"
+
+#: apps\accounts\models.py
+msgid "Уведомления включены"
+msgstr "Notifications enabled"
+
+#: templates\projects\project_detail.html
+msgid "Удаление проекта"
+msgstr ""
+
+#: templates\tags\tag_list.html templates\tasks\task_delete_confirm.html
+msgid "Удалить"
+msgstr "Delete"
+
+#: apps\accounts\forms.py
+msgid "Удалить аватар"
+msgstr "Remove avatar"
+
+#: templates\tasks\task_detail.html
+msgid "Удалить задачу"
+msgstr ""
+
+#: templates\tasks\task_delete_confirm.html
+msgid "Удалить задачу?"
+msgstr ""
+
+#: templates\projects\project_detail.html
+msgid "Удалить проект"
+msgstr ""
+
+#: templates\tasks\task_detail.html
+msgid "Удалить пункт чеклиста"
+msgstr ""
+
+#: templates\landing.html
+msgid "Удобные задачи"
+msgstr ""
+
+#: templates\auth\register.html
+msgid "Уже есть аккаунт?"
+msgstr "Already have an account?"
+
+#: templates\landing.html
+msgid "Узнать больше"
+msgstr ""
+
+#: apps\accounts\admin.py
+msgid "Управление TaskFlow"
+msgstr ""
+
+#: templates\settings\settings.html
+msgid ""
+"Управляйте данными профиля, темой, языком интерфейса и параметрами "
+"безопасности в одном месте."
+msgstr ""
+"Manage profile data, theme, interface language, and security settings in one"
+" place."
+
+#: templates\tasks\task_list.html
+msgid ""
+"Управляйте списком задач, быстро находите нужные и создавайте новые без "
+"лишних переходов."
+msgstr ""
+
+#: templates\tasks\task_list.html
+msgid "Фильтры"
+msgstr "Filters"
+
+#: templates\landing.html
+msgid "Финальная проверка"
+msgstr ""
+
+#: templates\auth\password_reset_placeholder.html
+msgid "Функция восстановления пароля будет добавлена позже."
+msgstr "Password reset will be added later."
+
+#: apps\projects\models.py apps\tasks\models.py
+msgid "Цвет"
+msgstr "Color"
+
+#: apps\tasks\models.py templates\tasks\task_detail.html
+msgid "Чеклист"
+msgstr "Checklist"
+
+#: templates\tasks\task_detail.html
+msgid "Чеклист пока пуст"
+msgstr ""
+
+#: apps\tasks\models.py
+msgid "Чеклисты"
+msgstr "Checklists"
+
+#: apps\dashboard\views.py templates\calendar\calendar.html
+#: templates\landing.html
+msgid "Чт"
+msgstr "Thu"
+
+#: templates\errors\500.html
+msgid "Что-то пошло не так"
+msgstr "Something went wrong"
+
+#: templates\projects\project_detail.html
+msgid ""
+"Это действие удалит проект и связанные данные без возможности "
+"восстановления."
+msgstr ""
+
+#: apps\accounts\forms.py
+msgid "Этот email уже используется."
+msgstr "This email is already in use."
+
+#: apps\accounts\forms.py
+msgid "Я согласен с условиями"
+msgstr "I agree to the terms"
+
+#: apps\accounts\models.py
+msgid "Язык"
+msgstr "Language"
+
+#: apps\accounts\forms.py
+msgid "Язык интерфейса"
+msgstr "Interface language"
+
+#: templates\dashboard\dashboard.html templates\landing.html
+msgid "выполнено"
+msgstr "completed"
+
+#: templates\landing.html
+msgid "достигайте"
+msgstr ""
+
+#: templates\projects\project_list.html templates\tags\tag_list.html
+msgid "задач"
+msgstr ""
+
+#: templates\landing.html
+msgid "спокойно и"
+msgstr ""
+
+#: templates\landing.html
+msgid "целей"
+msgstr ""

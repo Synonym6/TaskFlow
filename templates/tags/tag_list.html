@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Теги" %} | TaskFlow{% endblock %}
+{% block topbar_title %}<h1>{% trans "Мои теги" %}</h1>{% endblock %}
+{% block content %}
+<section class="page-intro">
+    <div>
+        <h2>{% trans "Теги" %}</h2>
+        <p>{% trans "Используйте теги для быстрой фильтрации задач и аккуратной группировки по темам." %}</p>
+    </div>
+</section>
+
+<div class="page-grid">
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "Список тегов" %}</h2>
+                <p class="section-head__meta">{% trans "Количество задач считается по реальным связям текущего пользователя." %}</p>
+            </div>
+        </div>
+        <div class="tag-grid">
+            {% for tag in tags %}
+                <div class="tag-card">
+                    <div class="tag-card__content">
+                        <span class="tag-color" style="background: {{ tag.color }}"></span>
+                        <div class="tag-card__meta">
+                            <strong>{{ tag.name }}</strong>
+                            <small class="d-block">{{ tag.tasks.count }} {% trans "задач" %}</small>
+                        </div>
+                    </div>
+                    <div class="tag-card__actions">
+                        <a href="{% url 'tasks:list' %}?tag={{ tag.pk }}" class="btn btn-sm btn-soft">{% trans "Открыть" %}</a>
+                        <a href="{% url 'tasks:tags' %}?edit={{ tag.pk }}" class="btn btn-sm btn-soft">{% trans "Изменить" %}</a>
+                        <form method="post" action="{% url 'tasks:tag_delete' tag.pk %}" data-submit-state class="tag-card__delete">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-outline-danger" type="submit" data-submit-button>{% trans "Удалить" %}</button>
+                        </form>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <h3>{% trans "Тегов пока нет" %}</h3>
+                    <p>{% trans "Создайте первый тег, чтобы быстрее фильтровать задачи по темам." %}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="card-surface">
+        <div class="section-head section-head--stack">
+            <div>
+                <h2>{% trans "Новый тег" %}</h2>
+                <p class="section-head__meta">{% trans "Название должно быть уникальным в пределах вашего аккаунта." %}</p>
+            </div>
+        </div>
+        <form method="post" class="app-form mt-3" novalidate data-submit-state>
+            {% csrf_token %}
+            {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+            {% for field in form %}
+                {% include "partials/form_field.html" with field=field %}
+            {% endfor %}
+            <button class="btn btn-primary w-100" type="submit" data-submit-button>{% trans "Создать тег" %}</button>
+        </form>
+
+        {% if edit_form %}
+            <div class="section-separator"></div>
+            <div class="section-head section-head--stack">
+                <div>
+                    <h2>{% trans "Редактирование тега" %}</h2>
+                    <p class="section-head__meta">{{ edit_tag.name }}</p>
+                </div>
+            </div>
+            <form method="post" class="app-form mt-3" novalidate data-submit-state>
+                {% csrf_token %}
+                <input type="hidden" name="action" value="edit_tag">
+                {% if edit_form.non_field_errors %}<div class="alert alert-danger">{{ edit_form.non_field_errors }}</div>{% endif %}
+                {% for field in edit_form %}
+                    {% include "partials/form_field.html" with field=field %}
+                {% endfor %}
+                <button class="btn btn-primary w-100" type="submit" data-submit-button>{% trans "Сохранить тег" %}</button>
+            </form>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

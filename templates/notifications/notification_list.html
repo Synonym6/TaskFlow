@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Уведомления" %} | TaskFlow{% endblock %}
+{% block topbar_title %}<h1>{% trans "Уведомления" %}</h1>{% endblock %}
+{% block content %}
+<section class="page-intro">
+    <div>
+        <h2>{% trans "Все уведомления" %}</h2>
+        <p>{% trans "Здесь собраны реальные напоминания о дедлайнах, прогрессе проектов и завершении задач." %}</p>
+    </div>
+    <button
+        type="button"
+        class="btn btn-soft"
+        data-mark-all-read
+        data-url="{% url 'notifications:mark_all_read' %}"
+        {% if not unread_count %}disabled{% endif %}
+    >{% trans "Отметить всё как прочитанное" %}</button>
+</section>
+
+<section class="card-surface">
+    {% for notification in notifications %}
+        <article class="notification-row {% if not notification.is_read %}unread{% endif %}">
+            <div>
+                <strong>{{ notification.title }}</strong>
+                <p>{{ notification.message }}</p>
+            </div>
+            <div class="text-end">
+                <span class="status-chip">{{ notification.get_type_display }}</span>
+                <small class="d-block text-muted mt-2">{{ notification.created_at|date:"d.m.Y H:i" }}</small>
+            </div>
+        </article>
+    {% empty %}
+        <div class="empty-state">
+            <h3>{% trans "Уведомлений пока нет" %}</h3>
+            <p>{% trans "Когда появятся дедлайны, изменения статусов и прогресс проектов, уведомления будут отображаться здесь." %}</p>
+        </div>
+    {% endfor %}
+</section>
+{% endblock %}

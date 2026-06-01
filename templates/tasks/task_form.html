@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ page_title }} | TaskFlow{% endblock %}
+{% block topbar_title %}<h1>{{ page_title }}</h1>{% endblock %}
+{% block content %}
+<section class="page-intro">
+    <div>
+        <h2>{{ page_title }}</h2>
+        <p>{% trans "Заполните основные параметры задачи. Все проверки выполняются на сервере, поэтому данные не потеряются при ошибке." %}</p>
+    </div>
+</section>
+
+<section class="card-surface form-surface">
+    <form method="post" novalidate class="app-form" data-submit-state>
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="row g-4">
+            {% for field in form %}
+                <div class="col-md-6 {% if field.name == 'description' or field.name == 'tags' %}col-12{% endif %}">
+                    {% include "partials/form_field.html" with field=field %}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit" data-submit-button>{% trans "Сохранить" %}</button>
+            <a href="{% url 'tasks:list' %}" class="btn btn-soft">{% trans "Отмена" %}</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

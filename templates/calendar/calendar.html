@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block title %}{% trans "Календарь" %} | TaskFlow{% endblock %}
+{% block topbar_title %}<h1>{% trans "Календарь" %}</h1>{% endblock %}
+{% block content %}
+<section class="page-intro">
+    <div>
+        <h2>{% trans "Календарь задач" %}</h2>
+        <p>{% trans "Просматривайте дедлайны по месяцам, неделям и дням. Каждая ссылка ведёт к реальной задаче или созданию новой на выбранную дату." %}</p>
+    </div>
+    <a href="{% url 'tasks:create' %}" class="btn btn-primary">{% trans "Создать задачу" %}</a>
+</section>
+
+<section class="card-surface">
+    <div class="section-head">
+        <div>
+            <h2>{{ calendar_month }} / {{ calendar_year }}</h2>
+            <p class="section-head__meta">{% trans "Выберите удобный режим просмотра и откройте задачи прямо из календаря." %}</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <div class="btn-group" role="group" aria-label="{% trans 'Режим календаря' %}">
+                <button type="button" class="btn btn-soft calendar-view-btn" data-view="month">{% trans "Месяц" %}</button>
+                <button type="button" class="btn btn-soft calendar-view-btn" data-view="week">{% trans "Неделя" %}</button>
+                <button type="button" class="btn btn-soft calendar-view-btn" data-view="day">{% trans "День" %}</button>
+            </div>
+        </div>
+    </div>
+    <div
+        id="calendarApp"
+        data-events='{{ events_json|safe }}'
+        data-month="{{ calendar_month }}"
+        data-year="{{ calendar_year }}"
+        data-empty-text="{% trans 'Нет задач на выбранный период.' %}"
+        data-week-text="{% trans 'Неделя' %}"
+        data-day-text="{% trans 'День' %}"
+        data-add-task-text="{% trans 'Создать задачу' %}"
+        data-create-task-url="{{ task_create_url }}"
+        data-weekdays='["{% trans "Пн" %}","{% trans "Вт" %}","{% trans "Ср" %}","{% trans "Чт" %}","{% trans "Пт" %}","{% trans "Сб" %}","{% trans "Вс" %}"]'
+        class="calendar-shell"
+    ></div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/calendar.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% load widget_tweaks %}
+<div class="{{ wrapper_class|default:'app-form__field' }}">
+    {% if field.field.widget.input_type != 'checkbox' %}
+        <label for="{{ field.id_for_label }}" class="app-form__label">
+            {{ field.label }}
+            {% if field.field.required %}<span class="app-form__required">*</span>{% endif %}
+        </label>
+    {% endif %}
+
+    {% if field.field.widget.input_type == 'checkbox' %}
+        <label for="{{ field.id_for_label }}" class="app-checkbox">
+            {{ field|add_class:"app-checkbox__input" }}
+            <span class="app-checkbox__box" aria-hidden="true"></span>
+            <span class="app-checkbox__text">
+                {{ field.label }}
+                {% if field.help_text %}
+                    <small>{{ field.help_text }}</small>
+                {% endif %}
+            </span>
+        </label>
+    {% elif field.field.widget.input_type == 'file' %}
+        {{ field|add_class:"app-file-input" }}
+    {% elif field.field.widget.allow_multiple_selected %}
+        {{ field|add_class:"form-select app-multiselect" }}
+    {% elif field.field.widget.input_type == 'select' %}
+        {{ field|add_class:"form-select app-select" }}
+    {% elif field.field.widget.input_type == 'textarea' %}
+        {{ field|add_class:"form-control app-textarea" }}
+    {% else %}
+        {{ field|add_class:"form-control app-input" }}
+    {% endif %}
+
+    {% if field.help_text and field.field.widget.input_type != 'checkbox' %}
+        <div class="app-form__hint">{{ field.help_text }}</div>
+    {% endif %}
+    {% if field.errors %}
+        <div class="app-form__error" role="alert">{{ field.errors|join:", " }}</div>
+    {% endif %}
+</div>

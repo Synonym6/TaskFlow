@@ -1,0 +1,12 @@
+{% extends 'guest_base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="error-shell">
+    <div class="card-surface error-card">
+        <div class="error-code">404</div>
+        <h1>{% trans "Страница не найдена" %}</h1>
+        <p>{% trans "Запрошенная страница не существует или была перемещена." %}</p>
+        <a href="{% url 'landing' %}" class="btn btn-primary">{% trans "На главную" %}</a>
+    </div>
+</div>
+{% endblock %}
