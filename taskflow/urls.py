@@ -3,17 +3,20 @@ from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import RedirectView
 
 from apps.dashboard.views import handler404_view, handler500_view, landing_page
 
 
 urlpatterns = [
     path("i18n/", include("django.conf.urls.i18n")),
+    path("admin/", admin.site.urls),
+    path("ru/admin/", RedirectView.as_view(pattern_name="admin:index", permanent=False)),
+    path("en/admin/", RedirectView.as_view(pattern_name="admin:index", permanent=False)),
 ]
 
 urlpatterns += i18n_patterns(
     path("", landing_page, name="landing"),
-    path("admin/", admin.site.urls),
     path("", include("apps.accounts.urls")),
     path("", include("apps.dashboard.urls")),
     path("", include("apps.tasks.urls")),
